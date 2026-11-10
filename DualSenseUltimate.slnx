@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DualSenseUltimate.Api/DualSenseUltimate.Api.csproj" />
+    <Project Path="src/DualSenseUltimate.Core/DualSenseUltimate.Core.csproj" />
+    <Project Path="src/DualSenseUltimate.Platform/DualSenseUltimate.Platform.csproj" />
+    <Project Path="src/DualSenseUltimate.Plugin.Abstractions/DualSenseUltimate.Plugin.Abstractions.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DualSenseUltimate.Tests/DualSenseUltimate.Tests.csproj" />
+  </Folder>
+</Solution>
