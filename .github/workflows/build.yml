@@ -6,6 +6,9 @@ on:
     tags: ["v*"]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -14,15 +17,15 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
       - run: dotnet build -c Release
       - run: dotnet test -c Release --no-build
       # Renders every page of the real UI off-screen; fails if any page throws while building.
       - run: dotnet run -c Release --no-build --project tools/Screenshots -- artifacts/screenshots
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: screenshots-${{ matrix.os }}
@@ -32,32 +35,86 @@ jobs:
     needs: test
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
       - name: Version
         id: v
         shell: pwsh
         run: |
-          $v = if ("${{ github.ref_type }}" -eq "tag") { "${{ github.ref_name }}".TrimStart("v") } else { "1.0.0" }
+          $v = if ($env:GITHUB_REF_TYPE -eq "tag") { $env:GITHUB_REF_NAME.TrimStart("v") } else { "1.0.0" }
+          if ($v -notmatch '^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$') { throw "Invalid release version: $v" }
           "version=$v" >> $env:GITHUB_OUTPUT
       - name: Publish and build installer
         shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ steps.v.outputs.version }}
         run: |
           if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup -y --no-progress }
-          ./scripts/publish.ps1 -Version ${{ steps.v.outputs.version }}
-      - uses: actions/upload-artifact@v4
+          ./scripts/publish.ps1 -Version $env:RELEASE_VERSION
+      - uses: actions/upload-artifact@v7
         with:
           name: DualSenseUltimate-Setup
           path: installer/Output/*.exe
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: DualSenseUltimate-portable
           path: artifacts/publish
-      - name: Release
+      - name: Package release assets
         if: github.ref_type == 'tag'
-        uses: softprops/action-gh-release@v2
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ steps.v.outputs.version }}
+        run: |
+          $version = $env:RELEASE_VERSION
+          $release = "artifacts/release"
+          New-Item -ItemType Directory -Path $release -Force | Out-Null
+          $portable = "installer/Output/DualSenseUltimate-Portable-$version.zip"
+          Compress-Archive -Path "artifacts/publish/*" -DestinationPath $portable -CompressionLevel Optimal
+          Copy-Item "installer/Output/DualSenseUltimate-Setup-$version.exe" $release
+          Copy-Item $portable $release
+          $checksums = Get-ChildItem $release -File | Get-FileHash -Algorithm SHA256 | ForEach-Object {
+            "$($_.Hash.ToLower())  $([System.IO.Path]::GetFileName($_.Path))"
+          }
+          Set-Content -Path "$release/SHA256SUMS.txt" -Value $checksums -Encoding ascii
+      - uses: actions/upload-artifact@v7
+        if: github.ref_type == 'tag'
         with:
-          files: installer/Output/*.exe
-          generate_release_notes: true
+          name: release-assets
+          path: artifacts/release/*
+
+  release:
+    needs: installer
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Prepare release notes
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          $version = $env:RELEASE_TAG.TrimStart('v')
+          $changelog = Get-Content CHANGELOG.md -Raw
+          $pattern = "(?ms)^## $([regex]::Escape($version))\s*\r?\n(?<body>.*?)(?=^## |\z)"
+          $match = [regex]::Match($changelog, $pattern)
+          if (-not $match.Success) { throw "No CHANGELOG.md section found for $version" }
+          Set-Content -Path release-notes.md -Value $match.Groups['body'].Value.Trim() -Encoding utf8
+      - uses: actions/download-artifact@v8
+        with:
+          name: release-assets
+          path: release
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: |
+            release/*.exe
+            release/*.zip
+            release/SHA256SUMS.txt
+          name: DualSense Ultimate ${{ github.ref_name }}
+          body_path: release-notes.md
+          prerelease: ${{ contains(github.ref_name, '-') }}

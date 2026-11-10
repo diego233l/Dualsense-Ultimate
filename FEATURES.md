@@ -9,10 +9,10 @@ Leyenda:
 - **PARCIAL** — implementada en parte (se indica qué falta).
 - **NO** — no implementada por una limitación técnica (ver KNOWN_ISSUES.md).
 
-> A día de hoy **ninguna función tiene estado HW**: no se ha dispuesto de un mando físico. Las
-> marcadas SIM tienen su lógica verificada; que el mando real responda igual depende de que el
-> protocolo documentado sea correcto, lo cual es probable (coincide con el driver de Linux) pero no
-> está comprobado aquí.
+> Un usuario confirmó en un DualSense real que funcionan la iluminación de la barra, el LED del
+> micrófono y los gatillos adaptativos. No se registraron modelo, conexión ni firmware; tampoco se
+> validaron todos los efectos. El resto de funciones indicadas como PEND sigue sin una prueba en
+> hardware. Las marcadas SIM tienen su lógica verificada con mandos simulados.
 
 ## Gestión de mandos
 
@@ -34,8 +34,9 @@ Leyenda:
 
 | Función | Estado |
 |---|---|
-| Color RGB, brillo | SIM |
-| LEDs de jugador (modos, máscara, brillo), LED de micrófono | SIM |
+| Color RGB y brillo de la barra de luz | SIM + HW (confirmación de usuario en DualSense) |
+| LEDs de jugador (modos, máscara, brillo) | SIM |
+| LED del micrófono | SIM + HW (confirmación de usuario en DualSense) |
 | Estático, respiración, arcoíris, ciclo, pulso, batería, editor personalizado | SIM |
 | Reactivo a notificaciones | SIM (las notificaciones entran por API/plugins; ver KNOWN_ISSUES) |
 | Reactivo a la música | PEND (captura WASAPI) |
@@ -46,6 +47,7 @@ Leyenda:
 | Función | Estado |
 |---|---|
 | Resistencia constante, progresiva, por zonas | SIM (bytes verificados contra dualsensectl) |
+| Gatillos adaptativos L2/R2 | HW (confirmación de usuario en DualSense; efectos concretos no registrados) |
 | Arma, arco, vibración, vibración por zonas, galope, máquina | SIM |
 | Parámetros de bajo nivel (bloque en bruto) | SIM |
 | Editor visual, zona de pruebas, L2/R2 independientes | SIM (UI) / PEND (sensación física) |
@@ -103,7 +105,7 @@ Leyenda:
 | Motor de reglas (batería, conexión, procesos, notificaciones) | SIM |
 | Plugins con permisos, plugins de ejemplo | SIM |
 | API REST local + SSE, ejemplos Python/JavaScript | SIM |
-| Biblioteca comunitaria: descarga e instalación | SIM (validación del catálogo) / PEND (descarga real: el catálogo existe al fusionar en `main`) |
+| Biblioteca comunitaria: descarga e instalación | SIM (índice incluido y validado) / PEND (flujo completo pendiente de validación en la app) |
 | Biblioteca comunitaria: publicar desde la app, valoraciones | NO (requiere un servicio en línea); alternativa: pull requests |
 
 ## Aplicación

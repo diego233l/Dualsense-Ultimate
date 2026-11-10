@@ -6,6 +6,9 @@ háptica, remapeo, macros, giroscopio, emulación de mandos, perfiles por juego,
 plugins y una API local. Compatible con **DualSense**, **DualSense Edge** y **DualShock 4**, por USB y
 Bluetooth, con varios mandos a la vez.
 
+[![Compilación](https://github.com/diego233l/Dualsense-Ultimate/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/diego233l/Dualsense-Ultimate/actions/workflows/build.yml)
+[![Última versión](https://img.shields.io/github/v/release/diego233l/Dualsense-Ultimate?include_prereleases)](https://github.com/diego233l/Dualsense-Ultimate/releases)
+
 ![Dashboard](docs/screenshots/01-dashboard.png)
 
 > **Estado de validación (léelo antes de usarla).** El proyecto se ha desarrollado sin acceso a un
@@ -16,15 +19,19 @@ Bluetooth, con varios mandos a la vez.
 
 ## Instalación
 
-1. Descarga `DualSenseUltimate-Setup-x.y.z.exe` de *Releases* (o del artefacto `DualSenseUltimate-Setup`
-   de la última ejecución de GitHub Actions).
+> **Candidato 1.0.0-rc.1:** se publica como pre-release mientras se valida el resto de funciones en
+> hardware real. La actualización automática solo ofrece versiones estables; para probar esta
+> candidata, descárgala manualmente desde [Releases](https://github.com/diego233l/Dualsense-Ultimate/releases).
+
+1. Descarga `DualSenseUltimate-Setup-x.y.z.exe` de [Releases](https://github.com/diego233l/Dualsense-Ultimate/releases)
+   (o el artefacto `DualSenseUltimate-Setup` de la última ejecución de GitHub Actions).
 2. Ejecútalo. La instalación es por usuario y **no necesita permisos de administrador**.
 3. Opcional, solo si quieres emular un mando Xbox o DualShock 4: marca **ViGEmBus** y **HidHide** en
    el instalador (se descargan de sus repositorios oficiales y sí piden permisos de administrador).
 4. Conecta el mando por USB o emparéjalo por Bluetooth en Windows. Aparecerá solo en el Dashboard.
 
-Versión portable: descomprime el artefacto `DualSenseUltimate-portable` y ejecuta `DualSenseUltimate.exe`.
-No requiere instalar .NET.
+Versión portable: descarga y descomprime `DualSenseUltimate-Portable-x.y.z.zip`; después ejecuta
+`DualSenseUltimate.exe`. No requiere instalar .NET.
 
 Desinstalación: desde «Aplicaciones instaladas». El desinstalador vuelve a mostrar cualquier mando
 ocultado, quita el inicio automático y pregunta si quieres conservar tus perfiles.

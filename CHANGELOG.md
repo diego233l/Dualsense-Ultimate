@@ -1,6 +1,9 @@
 # Changelog
 
-## 1.0.0 (sin publicar)
+## 1.0.0-rc.1 — 2026-11-10
+
+Primera candidata pública. Se distribuye como pre-release mientras continúa la validación en
+hardware real; consulta [FEATURES.md](FEATURES.md) y [el plan de pruebas](docs/HARDWARE_TEST_PLAN.md).
 
 Primera versión.
 
@@ -36,6 +39,8 @@ Correcciones tras la primera prueba con un mando real (luces, LED de micrófono 
 - Perfiles por juego con restauración automática, automatizaciones, plugins, API REST local.
 - Biblioteca comunitaria (catálogo estático), importación/exportación validada.
 - Interfaz de 13 secciones, tema oscuro y claro, icono de bandeja.
-- Instalador Inno Setup, CI en Windows y Linux, 112 pruebas automatizadas.
+- Instalador Inno Setup, CI en Windows y Linux, 135 pruebas automatizadas.
 
-Pendiente antes de publicar una versión estable: validación en hardware físico (ver FEATURES.md).
+Validación física confirmada por un usuario para la barra de luz, el LED del micrófono y los
+gatillos adaptativos de un DualSense. Antes de una versión estable falta validar el resto de las
+funciones y controladores indicados como PEND en [FEATURES.md](FEATURES.md).

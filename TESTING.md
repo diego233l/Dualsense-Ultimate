@@ -5,10 +5,10 @@
 | Tipo | Dónde | Resultado |
 |---|---|---|
 | Pruebas automatizadas (135) | `dotnet test`, Linux local | 135 superadas, 0 fallidas |
-| Pruebas automatizadas (135) | GitHub Actions `windows-latest` y `ubuntu-latest` | Superadas (ejecuciones 1 a 4 del flujo `build`) |
+| Pruebas automatizadas (135) | GitHub Actions `windows-latest` y `ubuntu-latest` | Última compilación del programa superada en el [commit `9029d91`](https://github.com/diego233l/Dualsense-Ultimate/actions/runs/42875783452) |
 | Render de la interfaz (13 páginas) | `tools/Screenshots`, Linux local y CI Windows/Linux | Sin errores |
 | Publicación autocontenida `win-x64` | Linux local (compilación cruzada) | Genera `DualSenseUltimate.exe` (PE32+ GUI) |
-| Compilación del instalador (Inno Setup) | CI Windows | Correcta (ejecuciones 3 y 4 del flujo `build`); el instalador **no se ha ejecutado** |
+| Compilación del instalador (Inno Setup) | CI Windows | Correcta para el [commit `9029d91`](https://github.com/diego233l/Dualsense-Ultimate/actions/runs/42875783452); el instalador **no se ha ejecutado** |
 | **Hardware físico** | — | **No realizado: no se dispone de mando** |
 | Hardware físico (usuario, DualSense) | Primera prueba | La app detecta el mando y escribe luces/gatillos, pero otro emisor los sobrescribía; corregidos dos defectos propios y añadido aislamiento. Tras las correcciones el usuario confirma que luces, LED de micrófono y gatillos funcionan (sin informe detallado: modelo, conexión y firmware no registrados) |
 | Ejecución interactiva en Windows | — | **No realizada** |
