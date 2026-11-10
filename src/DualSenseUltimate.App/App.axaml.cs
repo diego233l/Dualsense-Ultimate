@@ -54,8 +54,12 @@ public partial class App : Application
 
     private void TrayExit(object? sender, EventArgs e) => ExitApp();
 
+    public static bool IsExiting { get; private set; }
+
     public static void ExitApp()
     {
+        if (IsExiting) return;
+        IsExiting = true;
         if (Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime d) d.Shutdown();
     }
 }

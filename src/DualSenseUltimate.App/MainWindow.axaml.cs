@@ -57,6 +57,7 @@ public partial class MainWindow : Window
         Closing += (_, e) =>
         {
             // Closing the window keeps the app running in the tray (mappings and effects stay active).
+            if (App.IsExiting) return;
             if (!ForceClose && AppState.Runtime.Settings.MinimizeToTray) { e.Cancel = true; Hide(); }
             else App.ExitApp();
         };
