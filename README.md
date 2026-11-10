@@ -18,7 +18,7 @@ Bluetooth, con varios mandos a la vez.
 
 ## Instalación
 
-La versión estable 1.0.0 está disponible en [Releases](https://github.com/diego233l/Dualsense-Ultimate/releases).
+La versión estable está disponible en [Releases](https://github.com/diego233l/Dualsense-Ultimate/releases).
 
 1. Descarga `DualSenseUltimate-Setup-x.y.z.exe` de [Releases](https://github.com/diego233l/Dualsense-Ultimate/releases)
    (o el artefacto `DualSenseUltimate-Setup` de la última ejecución de GitHub Actions).
