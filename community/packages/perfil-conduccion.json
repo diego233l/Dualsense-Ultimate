@@ -1,0 +1,31 @@
+{
+  "format": "dualsense-ultimate",
+  "schemaVersion": 1,
+  "kind": "profile",
+  "name": "Conducción",
+  "author": "DualSense Ultimate",
+  "description": "Acelerador con resistencia suave y freno progresivo. La barra y los LEDs muestran la batería.",
+  "version": "1.0",
+  "payload": {
+    "name": "Conducción",
+    "description": "Freno progresivo en L2 y acelerador suave en R2.",
+    "lighting": {
+      "mode": "Battery",
+      "playerLeds": "Battery"
+    },
+    "l2": {
+      "type": "SlopeFeedback",
+      "name": "Freno (coche)",
+      "start": 2,
+      "end": 8,
+      "strength": 3,
+      "strength2": 8
+    },
+    "r2": {
+      "type": "Feedback",
+      "name": "Acelerador (coche)",
+      "start": 3,
+      "strength": 3
+    }
+  }
+}

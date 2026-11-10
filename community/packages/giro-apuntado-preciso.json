@@ -1,0 +1,17 @@
+{
+  "format": "dualsense-ultimate",
+  "schemaVersion": 1,
+  "kind": "gyro",
+  "name": "Apuntado preciso",
+  "author": "DualSense Ultimate",
+  "description": "Giroscopio como ratón solo mientras apuntas con L2; sensibilidad baja y filtrado alto.",
+  "version": "1.0",
+  "payload": {
+    "mode": "Mouse",
+    "sensitivityX": 4,
+    "sensitivityY": 4,
+    "deadZone": 0.8,
+    "smoothing": 0.5,
+    "activationButton": "L2"
+  }
+}

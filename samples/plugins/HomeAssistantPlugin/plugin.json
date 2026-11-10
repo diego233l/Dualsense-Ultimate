@@ -1,0 +1,9 @@
+{
+  "id": "samples.home-assistant",
+  "name": "Home Assistant (webhook)",
+  "version": "1.0",
+  "author": "DualSense Ultimate",
+  "description": "Envía los eventos del mando (conexión, batería, perfil) a un webhook de Home Assistant. Configura la URL en config.json dentro de la carpeta de datos del plugin.",
+  "assembly": "HomeAssistantPlugin.dll",
+  "permissions": ["Events"]
+}

@@ -1,0 +1,63 @@
+name: build
+
+on:
+  push:
+    branches: [main, "claude/**"]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet build -c Release
+      - run: dotnet test -c Release --no-build
+      # Renders every page of the real UI off-screen; fails if any page throws while building.
+      - run: dotnet run -c Release --no-build --project tools/Screenshots -- artifacts/screenshots
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots-${{ matrix.os }}
+          path: artifacts/screenshots
+
+  installer:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Version
+        id: v
+        shell: pwsh
+        run: |
+          $v = if ("${{ github.ref_type }}" -eq "tag") { "${{ github.ref_name }}".TrimStart("v") } else { "1.0.0" }
+          "version=$v" >> $env:GITHUB_OUTPUT
+      - name: Publish and build installer
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup -y --no-progress }
+          ./scripts/publish.ps1 -Version ${{ steps.v.outputs.version }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DualSenseUltimate-Setup
+          path: installer/Output/*.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DualSenseUltimate-portable
+          path: artifacts/publish
+      - name: Release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: installer/Output/*.exe
+          generate_release_notes: true

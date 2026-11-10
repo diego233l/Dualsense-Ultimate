@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "perfil-shooter",
+      "name": "Shooter genérico",
+      "kind": "profile",
+      "author": "DualSense Ultimate",
+      "description": "R2 con punto de disparo tipo pistola, L2 con resistencia media para apuntar y barra roja.",
+      "game": "Genérico",
+      "version": "1.0",
+      "url": "packages/perfil-shooter.json"
+    },
+    {
+      "id": "perfil-conduccion",
+      "name": "Conducción",
+      "kind": "profile",
+      "author": "DualSense Ultimate",
+      "description": "Acelerador con resistencia suave y freno progresivo. La barra y los LEDs muestran la batería.",
+      "game": "Genérico",
+      "version": "1.0",
+      "url": "packages/perfil-conduccion.json"
+    },
+    {
+      "id": "perfil-escritorio",
+      "name": "Escritorio: ratón con giroscopio",
+      "kind": "profile",
+      "author": "DualSense Ultimate",
+      "description": "Usa el mando como ratón: giroscopio al mantener L2, touchpad como ratón, R2 clic izquierdo y R1 clic derecho.",
+      "game": "Windows",
+      "version": "1.0",
+      "url": "packages/perfil-escritorio.json"
+    },
+    {
+      "id": "gatillo-francotirador",
+      "name": "Gatillo de francotirador",
+      "kind": "trigger",
+      "author": "DualSense Ultimate",
+      "description": "Recorrido largo y suave con un punto de disparo muy marcado al final.",
+      "game": "",
+      "version": "1.0",
+      "url": "packages/gatillo-francotirador.json"
+    },
+    {
+      "id": "gatillo-cuerda",
+      "name": "Cuerda de arco pesada",
+      "kind": "trigger",
+      "author": "DualSense Ultimate",
+      "description": "Tensión creciente con retroceso fuerte al soltar.",
+      "game": "",
+      "version": "1.0",
+      "url": "packages/gatillo-cuerda.json"
+    },
+    {
+      "id": "luz-atardecer",
+      "name": "Atardecer",
+      "kind": "lighting",
+      "author": "DualSense Ultimate",
+      "description": "Transición lenta entre naranja, rosa y violeta.",
+      "game": "",
+      "version": "1.0",
+      "url": "packages/luz-atardecer.json"
+    },
+    {
+      "id": "haptica-sos",
+      "name": "SOS",
+      "kind": "haptic",
+      "author": "DualSense Ultimate",
+      "description": "Tres cortos, tres largos, tres cortos.",
+      "game": "",
+      "version": "1.0",
+      "url": "packages/haptica-sos.json"
+    },
+    {
+      "id": "macro-doble-salto",
+      "name": "Doble salto",
+      "kind": "macro",
+      "author": "DualSense Ultimate",
+      "description": "Pulsa Cruz dos veces con el intervalo justo.",
+      "game": "",
+      "version": "1.0",
+      "url": "packages/macro-doble-salto.json"
+    },
+    {
+      "id": "giro-apuntado-preciso",
+      "name": "Apuntado preciso",
+      "kind": "gyro",
+      "author": "DualSense Ultimate",
+      "description": "Giroscopio como ratón solo mientras apuntas con L2; sensibilidad baja y filtrado alto.",
+      "game": "",
+      "version": "1.0",
+      "url": "packages/giro-apuntado-preciso.json"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "format": "dualsense-ultimate",
+  "schemaVersion": 1,
+  "kind": "trigger",
+  "name": "Gatillo de francotirador",
+  "author": "DualSense Ultimate",
+  "description": "Recorrido largo y suave con un punto de disparo muy marcado al final.",
+  "version": "1.0",
+  "payload": {
+    "type": "Weapon",
+    "name": "Gatillo de francotirador",
+    "start": 6,
+    "end": 8,
+    "strength": 8
+  }
+}

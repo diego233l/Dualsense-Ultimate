@@ -57,7 +57,7 @@ public sealed class PluginManager
                     var m = JsonFile.Deserialize<PluginManifest>(File.ReadAllText(manifestFile));
                     if (m == null || m.Id.Length == 0 || m.Id.Length > 64 || !m.Id.All(c => char.IsLetterOrDigit(c) || c is '.' or '-' or '_')) continue;
                     // The assembly must live inside the plugin folder.
-                    if (m.Assembly.Length == 0 || Path.GetFileName(m.Assembly) != m.Assembly) continue;
+                    if (m.Assembly.Length == 0 || m.Assembly.IndexOfAny(['/', '\\', ':']) >= 0 || m.Assembly.Contains("..") || !m.Assembly.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)) continue;
                     if (_entries.Any(e => e.Manifest.Id == m.Id)) continue;
                     _entries.Add(new PluginEntry { Manifest = m, Directory = dir });
                 }

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <!-- Private=false: the host provides the abstractions assembly -->
+    <ProjectReference Include="..\..\..\src\DualSenseUltimate.Plugin.Abstractions\DualSenseUltimate.Plugin.Abstractions.csproj" Private="false" ExcludeAssets="runtime" />
+    <None Include="plugin.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
