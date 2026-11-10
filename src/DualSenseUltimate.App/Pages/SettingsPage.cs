@@ -13,7 +13,9 @@ public sealed class SettingsPage : PageBase
     public override string Title => "Ajustes";
     public override string Subtitle => "Apariencia, inicio, controladores, copias de seguridad y diagnóstico";
     protected override bool RebuildOnControllers => false;
-    private string _update = "", _backup = "";
+    private string _backup = "";
+
+    public SettingsPage() => AppState.UpdateChanged += () => { if (IsLoaded) Rebuild(); };
 
     protected override Control Build()
     {
@@ -49,7 +51,7 @@ public sealed class SettingsPage : PageBase
             Ui.Row(8, Ui.Btn("Descargar ViGEmBus", () => FileIo.OpenUrl("https://github.com/nefarius/ViGEmBus/releases/latest")),
                 Ui.Btn("Descargar HidHide", () => FileIo.OpenUrl("https://github.com/nefarius/HidHide/releases/latest")),
                 Ui.Btn("Mostrar todos los mandos ocultos", () => hid?.UnhideAll())),
-            Ui.Text("Ambos controladores son opcionales: solo hacen falta para emular un mando Xbox/DualShock 4. El resto de funciones no los necesita.", "muted")));
+            Ui.Text("Ambos controladores son opcionales: ViGEmBus solo hace falta para emular un mando Xbox/DualShock 4, y HidHide para ocultar el mando físico (emulación y aislamiento).", "muted")));
 
         var allowed = new StackPanel { Spacing = 4 };
         foreach (var app in s.AllowedApplications.ToList())
@@ -89,9 +91,35 @@ public sealed class SettingsPage : PageBase
                     "• Un programa que ya tenía el mando abierto lo conserva hasta que lo cierres o reconectes el mando: tras activar el aislamiento, cierra Steam/DSX o desconecta y vuelve a conectar el mando.\n" +
                     "• Al salir de la aplicación o desinstalarla, el mando vuelve a ser visible para todos.", "muted")));
 
-        root.Children.Add(Card("Actualizaciones",
-            Toggle("Buscar actualizaciones al iniciar (consulta GitHub Releases; nunca instala nada sola)", s.CheckUpdates, v => { s.CheckUpdates = v; rt.SaveSettings(); }),
-            Ui.Row(8, Ui.Btn("Buscar ahora", CheckUpdate), Ui.Text(_update, "muted"))));
+        var upd = AppState.Update;
+        var updStatus = Ui.Text(AppState.UpdateStatus, "muted");
+        var updBar = new ProgressBar { Minimum = 0, Maximum = 1, Value = Math.Max(0, AppState.UpdateProgress), Height = 6, Width = 320, IsVisible = AppState.UpdateProgress >= 0, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left };
+        var updButtons = Ui.Row(8, Ui.Btn("Buscar ahora", () => _ = AppState.CheckUpdateAsync(true)));
+        if (upd != null)
+        {
+            if (upd.InstallerUrl != null && AppState.IsInstalled && OperatingSystem.IsWindows())
+                updButtons.Children.Add(Ui.Btn($"Descargar e instalar {upd.Version}", () => _ = AppState.InstallUpdateAsync(), true));
+            updButtons.Children.Add(Ui.Btn("Abrir página de descarga", () => FileIo.OpenUrl(upd.Url)));
+            updButtons.Children.Add(Ui.Btn("Omitir esta versión", AppState.SkipUpdate));
+        }
+        var updCard = Card("Actualizaciones",
+            Ui.Text($"Versión instalada: {AppState.CurrentVersion.ToString(3)}" + (AppState.IsInstalled ? "" : " (portable)"), "muted"),
+            Toggle("Buscar actualizaciones al iniciar y periódicamente", s.CheckUpdates, v => { s.CheckUpdates = v; rt.SaveSettings(); }),
+            updButtons, updBar, updStatus);
+        if (upd != null)
+        {
+            var sp = (StackPanel)updCard.Child!;
+            if (upd.Notes.Length > 0)
+                sp.Children.Add(new Border
+                {
+                    Background = Ui.Brush(this, "CardBg2"), CornerRadius = new Avalonia.CornerRadius(8), Padding = new Avalonia.Thickness(12), Margin = new Avalonia.Thickness(0, 8, 0, 0),
+                    Child = new ScrollViewer { MaxHeight = 180, Content = new SelectableTextBlock { Text = "Novedades de la versión " + upd.Version + "\n\n" + upd.Notes, TextWrapping = Avalonia.Media.TextWrapping.Wrap, FontSize = 12.5 } },
+                });
+            if (!AppState.IsInstalled) sp.Children.Add(Ui.Text("Esta es la versión portable: descarga la nueva versión desde la página y sustituye la carpeta.", "muted"));
+            else if (upd.InstallerUrl == null) sp.Children.Add(Ui.Text("Esta versión no publica un instalador verificable; usa la página de descarga.", "muted"));
+        }
+        ((StackPanel)updCard.Child!).Children.Add(Ui.Text("La app solo consulta la lista de versiones de GitHub. Nada se descarga ni instala sin que lo pidas. La descarga se limita al repositorio oficial por HTTPS y se comprueba su tamaño y su huella SHA-256 antes de ejecutarla; al instalar, la app se cierra, se actualiza conservando tus perfiles y vuelve a abrirse.", "muted"));
+        root.Children.Add(updCard);
 
         var backups = ConfigBackup.List(rt.Paths);
         var backupBox = new ComboBox { ItemsSource = backups.Select(Path.GetFileNameWithoutExtension).ToList(), PlaceholderText = backups.Count == 0 ? "Sin copias" : "Elegir copia…", Width = 260 };
@@ -119,22 +147,5 @@ public sealed class SettingsPage : PageBase
             Ui.Text("Proyecto independiente de código abierto (licencia MIT). No está afiliado a Sony Interactive Entertainment. «PlayStation», «DualSense» y «DualShock» son marcas de Sony.", "muted"),
             Ui.Text("Componentes: Avalonia UI (MIT), HidSharp (Apache-2.0), Nefarius.ViGEm.Client (MIT), NAudio (MIT), .NET (MIT). Protocolo documentado por la comunidad (hid-playstation de Linux, dualsensectl, DS4Windows).", "muted")));
         return root;
-    }
-
-    private void CheckUpdate()
-    {
-        _update = "Consultando…"; Rebuild();
-        var current = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(1, 0, 0);
-        string repo = AppState.Runtime.Settings.UpdateRepository;
-        Task.Run(async () =>
-        {
-            try
-            {
-                var info = await UpdateChecker.CheckAsync(repo, current);
-                _update = info == null ? "No hay versiones publicadas todavía." : info.IsNewer ? $"Versión {info.Version} disponible en {info.Url}" : "Tienes la última versión.";
-            }
-            catch (Exception ex) { _update = "No se pudo consultar: " + ex.Message; }
-            Dispatcher.UIThread.Post(Rebuild);
-        });
     }
 }

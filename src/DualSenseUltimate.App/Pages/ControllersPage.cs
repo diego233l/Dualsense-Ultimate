@@ -48,7 +48,7 @@ public sealed class ControllersPage : PageBase
                         (st.HeadphonesConnected ? "   ·   Auriculares conectados" : "") + (st.MicMuted ? "   ·   Micrófono silenciado" : "");
         });
 
-        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("170,*"), RowDefinitions = new RowDefinitions("Auto,Auto,Auto,Auto,Auto,Auto,Auto") };
+        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("170,*"), RowDefinitions = new RowDefinitions("Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto") };
         void Row(int r, string k, string v)
         {
             var a = Ui.Text(k, "muted"); var b = new TextBlock { Text = v, FontSize = 13, Margin = new Avalonia.Thickness(0, 3) };
@@ -60,7 +60,9 @@ public sealed class ControllersPage : PageBase
         Row(2, "Conexión", d.Connection == ConnectionType.Usb ? "USB" : "Bluetooth");
         Row(3, "Firmware", d.FirmwareVersion == null ? "No disponible" : d.FirmwareVersion + (d.FirmwareDate is { Length: > 0 } fd ? $"  ({fd})" : ""));
         Row(4, "Calibración IMU de fábrica", d.Calibration.Valid ? "Leída del mando" : "No disponible (se usan valores nominales)");
-        Row(5, "Temperatura de batería", "No disponible: el mando no expone este dato por HID");
+        Row(5, "Batería", "El mando solo informa en pasos del 10 %. El valor intermedio y el tiempo restante son una estimación que se calibra sola con el uso de este mando" +
+                          (d.Battery.Rates.Samples > 0 ? $" ({d.Battery.Rates.Samples} medidas; ≈ {d.Battery.Rates.DischargeMinutesPerLevel * 10 / 60:0.0} h de autonomía)." : " (aún sin medidas propias)."));
+        Row(7, "Temperatura de batería", "No disponible: el mando no expone este dato por HID");
         Row(6, "Emulación", s.EmulationStatus);
 
         var card = Card(rt.DisplayName(s), grid, new Border { Height = 6 }, live, new Border { Height = 8 },

@@ -94,6 +94,10 @@ public sealed class AppSettings
     /// <summary>Manually assigned profile per controller id.</summary>
     public Dictionary<string, string> ControllerProfiles { get; set; } = new();
     public string? DefaultProfileId { get; set; }
+    /// <summary>Learned battery drain/charge speed per controller id.</summary>
+    public Dictionary<string, Devices.BatteryRates> BatteryRates { get; set; } = new();
+    /// <summary>Version the user chose not to be reminded about.</summary>
+    public string? SkippedVersion { get; set; }
     public string CommunityIndexUrl { get; set; } = "https://raw.githubusercontent.com/diego233l/Dualsense-Ultimate/main/community/index.json";
     public string UpdateRepository { get; set; } = "diego233l/Dualsense-Ultimate";
     /// <summary>Plugins the user explicitly enabled (by id).</summary>

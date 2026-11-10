@@ -4,6 +4,16 @@
 
 Primera versión.
 
+Batería y actualizaciones:
+
+- **Batería calibrada**: el mando solo informa en pasos del 10 % y el valor bruto oscila. Ahora se
+  filtra (un cambio debe mantenerse unos segundos; no sube mientras descarga ni baja mientras carga),
+  se interpola dentro de cada paso y la velocidad de descarga/carga se aprende por mando y se guarda.
+  Se muestra la autonomía restante estimada.
+- **Actualizaciones desde la app**: aviso en la cabecera, notas de la versión, descarga con progreso,
+  verificación de tamaño y SHA-256, instalación silenciosa y reapertura automática. Opción de omitir
+  una versión; comprobación al iniciar y cada 12 horas.
+
 Correcciones tras la primera prueba con un mando real (luces, LED de micrófono y gatillos se aplicaban solo un instante):
 
 - El ajuste «lightbar setup» se enviaba en todos los informes; ahora solo en el primero tras conectar.

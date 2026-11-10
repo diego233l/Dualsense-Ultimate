@@ -114,6 +114,20 @@ Ver `docs/PLUGINS.md` y `docs/API.md`.
 Tema, inicio con Windows, bandeja, estado de los controladores opcionales, actualizaciones, copias
 de seguridad (crear y restaurar) y registros de diagnóstico.
 
+
+### Batería
+
+El mando comunica su batería en pasos del 10 %. La aplicación estabiliza ese dato y estima el valor
+intermedio y la autonomía restante; la estimación se ajusta sola a tu mando tras varias horas de uso
+(se ve en *Mandos → Batería*).
+
+### Actualizar
+
+Cuando hay una versión nueva aparece el botón **Actualizar a x.y.z** arriba a la derecha. En
+*Ajustes → Actualizaciones* puedes leer las novedades y pulsar **Descargar e instalar**: la app
+descarga el instalador oficial, lo verifica, se cierra, se actualiza conservando tus perfiles y se
+vuelve a abrir. La versión portable se actualiza sustituyendo la carpeta.
+
 ## 14. Solución de problemas
 
 | Problema | Qué hacer |

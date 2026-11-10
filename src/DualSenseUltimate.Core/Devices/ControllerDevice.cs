@@ -41,6 +41,9 @@ public sealed class ControllerDevice : IDisposable
     /// <summary>Measured input report rate in Hz.</summary>
     public double ReportRate { get; private set; }
     public InputState State => _state;
+    /// <summary>Stabilised, self-calibrating battery estimate (the hardware only reports 10 % steps).</summary>
+    public BatteryEstimator Battery { get; } = new();
+    private readonly Stopwatch _uptime = Stopwatch.StartNew();
 
     /// <summary>Raised on the read thread for every valid input report.</summary>
     public event Action<ControllerDevice, InputState>? InputReceived;
@@ -127,6 +130,7 @@ public sealed class ControllerDevice : IDisposable
                     ? DualSenseProtocol.TryParseInput(buffer.AsSpan(0, n), Connection, Model == ControllerModel.DualSenseEdge, out var st)
                     : DualShock4Protocol.TryParseInput(buffer.AsSpan(0, n), Connection, out st);
                 if (!ok) { Interlocked.Increment(ref _errorCount); continue; } // short BT report or CRC error
+                st.BatteryPercent = Battery.Update(st.BatteryLevelRaw, st.BatteryStatus, _uptime.Elapsed.TotalSeconds);
                 _state = st;
                 Interlocked.Increment(ref _reportCount);
                 _lastReportTicks = Stopwatch.GetTimestamp();

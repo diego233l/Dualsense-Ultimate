@@ -181,6 +181,11 @@ public sealed class AppRuntime : IAutomationTarget, IDisposable
 
     private void OnConnected(ControllerDevice dev)
     {
+        if (!dev.IsSimulated)
+        {
+            if (!Settings.BatteryRates.TryGetValue(dev.Id, out var rates)) Settings.BatteryRates[dev.Id] = rates = new BatteryRates();
+            dev.Battery.Rates = rates;
+        }
         var s = new ControllerSession(dev, Platform);
         s.BatteryChanged += e => Events.Publish(e);
         s.SpecialAction += OnSpecial;
@@ -200,6 +205,7 @@ public sealed class AppRuntime : IAutomationTarget, IDisposable
         lock (_lock) { _sessions.Remove(dev.Id, out s); }
         if (s == null) return;
         Activity.Add($"{DisplayName(s)} desconectado");
+        SaveSettings(); // keeps the learned battery calibration
         s.Dispose();
         Events.Publish(new ControllerDisconnectedEvent(dev.Id));
         SessionsChanged?.Invoke();
@@ -376,6 +382,7 @@ public sealed class AppRuntime : IAutomationTarget, IDisposable
         if (_disposed) return;
         _disposed = true;
         _tickTimer?.Dispose(); _slowTimer?.Dispose(); _simAnim?.Dispose();
+        SaveSettings();
         try { Plugins.UnloadAll(); } catch { }
         try { if (_audioRunning) Platform.AudioSource?.Stop(); } catch { }
         foreach (var s in Sessions) { try { s.Dispose(); } catch { } }

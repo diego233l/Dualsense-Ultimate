@@ -44,6 +44,8 @@ public static class Ui
         return c;
     }
 
+    public static string Duration(double minutes) => minutes >= 60 ? $"{(int)(minutes / 60)} h {(int)(minutes % 60):00} min" : $"{(int)minutes} min";
+
     public static string BatteryText(Core.Protocol.InputState s) => s.BatteryStatus switch
     {
         Core.Protocol.BatteryStatus.Charging => $"{s.BatteryPercent} % · cargando",

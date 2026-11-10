@@ -77,6 +77,7 @@ public static class DualSenseProtocol
 
         byte status0 = p[52], status1 = p[53];
         int level = status0 & 0x0F;
+        state.BatteryLevelRaw = (byte)Math.Min(level, 10);
         switch ((status0 & 0xF0) >> 4)
         {
             case 0x0: state.BatteryPercent = Math.Min(level * 10 + 5, 100); state.BatteryStatus = BatteryStatus.Discharging; break;

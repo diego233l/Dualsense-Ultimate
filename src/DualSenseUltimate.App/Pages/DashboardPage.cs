@@ -72,6 +72,7 @@ public sealed class DashboardPage(MainWindow window) : PageBase
         var batteryState = Ui.Text("", "muted");
         var bar = new ProgressBar { Minimum = 0, Maximum = 100, Height = 6, Width = 250, Margin = new Avalonia.Thickness(0, 6, 0, 8) };
         var health = Ui.Text("", "muted");
+        var remaining = Ui.Text("", "muted");
         var triggers = Ui.Text("", "muted");
         var swatch = new Border { Width = 16, Height = 16, CornerRadius = new Avalonia.CornerRadius(8) };
         var profile = Ui.Text("", "muted");
@@ -84,6 +85,9 @@ public sealed class DashboardPage(MainWindow window) : PageBase
                 BatteryStatus.Charging => "Cargando", BatteryStatus.Full => "Carga completa", BatteryStatus.Discharging => "En batería",
                 BatteryStatus.Error => "Error de carga", _ => "Estado desconocido",
             };
+            if (s.Device.Battery.MinutesRemaining is { } min && min >= 1 && st.BatteryStatus is BatteryStatus.Discharging or BatteryStatus.Charging)
+                remaining.Text = (st.BatteryStatus == BatteryStatus.Charging ? "Carga completa en ≈ " : "Autonomía restante ≈ ") + Ui.Duration(min);
+            else remaining.Text = "";
             bar.Value = st.BatteryPercent;
             bar.Foreground = Ui.Brush(this, st.BatteryPercent <= 20 && st.BatteryStatus == BatteryStatus.Discharging ? "Bad" : "Good");
             health.Text = s.Device.Health switch
@@ -104,7 +108,7 @@ public sealed class DashboardPage(MainWindow window) : PageBase
         header.Children.Add(pill);
         header.Children.Add(Stack(new TextBlock { Text = rt.DisplayName(s), FontSize = 16, FontWeight = FontWeight.SemiBold },
             Ui.Text(AppRuntime.ModelName(s.Device.Model) + (s.Device.IsSimulated ? " · SIMULADO" : ""), "muted")));
-        var card = Card(null, header, new Border { Height = 8 }, Ui.Row(10, battery, batteryState), bar, profile, triggers,
+        var card = Card(null, header, new Border { Height = 8 }, Ui.Row(10, battery, batteryState), bar, remaining, profile, triggers,
             Ui.Row(8, swatch, Ui.Text("Iluminación: " + ModeName(s.Profile.Lighting.Mode), "muted")), health);
         card.Width = 290;
         card.PointerPressed += (_, _) => AppState.SelectController(s.Id);

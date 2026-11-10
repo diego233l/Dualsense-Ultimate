@@ -54,6 +54,14 @@ public partial class MainWindow : Window
         _liveTimer.Start(); _slowTimer.Start();
         Nav.SelectedIndex = 0;
         RefreshHeader();
+        AppState.UpdateChanged += () =>
+        {
+            UpdateBadge.IsVisible = AppState.Update != null;
+            UpdateBadge.Content = AppState.Update == null ? "" : $"Actualizar a {AppState.Update.Version}";
+        };
+        // Re-check twice a day while the app stays open in the tray.
+        var updateTimer = new DispatcherTimer(TimeSpan.FromHours(12), DispatcherPriority.Background, (_, _) => { if (AppState.Runtime.Settings.CheckUpdates) _ = AppState.CheckUpdateAsync(false); });
+        updateTimer.Start();
         Closing += (_, e) =>
         {
             // Closing the window keeps the app running in the tray (mappings and effects stay active).
@@ -62,6 +70,8 @@ public partial class MainWindow : Window
             else App.ExitApp();
         };
     }
+
+    private void OpenUpdates(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => Navigate(12);
 
     public void Navigate(int index) => Nav.SelectedIndex = index;
     public T? Page<T>() where T : PageBase => _cache.Values.OfType<T>().FirstOrDefault();

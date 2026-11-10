@@ -23,20 +23,9 @@ public partial class App : Application
             if (minimized) window.ShowInTaskbar = true; // created hidden; the tray icon restores it
             else window.Show();
             desktop.Exit += (_, _) => AppState.Shutdown();
-            if (AppState.Runtime.Settings.CheckUpdates) _ = CheckForUpdateAsync();
+            if (AppState.Runtime.Settings.CheckUpdates) _ = AppState.CheckUpdateAsync(false);
         }
         base.OnFrameworkInitializationCompleted();
-    }
-
-    private static async Task CheckForUpdateAsync()
-    {
-        try
-        {
-            var current = typeof(App).Assembly.GetName().Version ?? new Version(1, 0, 0);
-            var info = await Core.Community.UpdateChecker.CheckAsync(AppState.Runtime.Settings.UpdateRepository, current);
-            if (info is { IsNewer: true }) AppState.Runtime.Activity.Add($"Hay una versión nueva disponible: {info.Version} (Ajustes → Actualizaciones)");
-        }
-        catch { /* offline: the app works without Internet */ }
     }
 
     public static void ApplyTheme(string theme)

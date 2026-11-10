@@ -24,6 +24,7 @@ Leyenda:
 | Varios mandos, identificación por MAC | SIM | Mismo mando por USB+BT no se duplica |
 | Modelo, id, conexión, firmware | SIM | Firmware: informe 0x20 (DualSense), 0xA3 (DS4) |
 | Batería y estado de carga | SIM | |
+| Batería calibrada (filtrado, interpolación, aprendizaje por mando, autonomía restante) | SIM | Precisión real pendiente de contrastar con el uso |
 | Temperatura de batería | NO | El mando no la expone |
 | Detección de problemas de comunicación | SIM | Tasa de informes, errores CRC, estados Ok/Degradado/Perdido |
 | Nombres personalizados | SIM | |
@@ -112,5 +113,5 @@ Leyenda:
 | Interfaz de 13 secciones, tema oscuro/claro | SIM (renderizada en CI en Windows y Linux) |
 | Bandeja del sistema, inicio con Windows, instancia única | PEND |
 | Copias de seguridad y recuperación de configuración | SIM |
-| Comprobación de actualizaciones | PEND |
+| Actualizaciones: aviso, descarga verificada e instalación desde la app | SIM (lógica y verificación) / PEND (instalación real: requiere una versión publicada) |
 | Instalador y desinstalador | PEND (se compila en CI; no se ha ejecutado) |

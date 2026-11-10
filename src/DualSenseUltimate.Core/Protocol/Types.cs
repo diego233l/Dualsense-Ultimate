@@ -30,6 +30,8 @@ public struct InputState
     public uint SensorTimestamp;
     public TouchPoint Touch0, Touch1;
     public int BatteryPercent;
+    /// <summary>Raw battery step reported by the hardware (0-10).</summary>
+    public byte BatteryLevelRaw;
     public BatteryStatus BatteryStatus;
     public bool HeadphonesConnected, MicConnected, MicMuted;
     /// <summary>Raw adaptive trigger status bytes (DualSense only, pending physical validation).</summary>

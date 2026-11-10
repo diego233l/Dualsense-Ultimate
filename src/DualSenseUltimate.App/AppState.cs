@@ -102,6 +102,78 @@ public static class AppState
         catch (Exception ex) { Log.Error("cannot save profile", ex); }
     }
 
+    // ---- updates
+
+    public static Core.Community.UpdateInfo? Update { get; private set; }
+    public static string UpdateStatus { get; private set; } = "";
+    public static double UpdateProgress { get; private set; } = -1;
+    public static event Action? UpdateChanged;
+    public static Version CurrentVersion => typeof(AppState).Assembly.GetName().Version ?? new Version(1, 0, 0);
+    /// <summary>True when installed with the installer (in-place update possible); false for the portable build.</summary>
+    public static bool IsInstalled => File.Exists(Path.Combine(AppContext.BaseDirectory, "unins000.exe"));
+
+    private static void RaiseUpdate() => Dispatcher.UIThread.Post(() => UpdateChanged?.Invoke());
+
+    public static async Task CheckUpdateAsync(bool manual)
+    {
+        try
+        {
+            if (manual) { UpdateStatus = "Consultando…"; RaiseUpdate(); }
+            var info = await Core.Community.UpdateChecker.CheckAsync(Runtime.Settings.UpdateRepository, CurrentVersion);
+            if (info == null) { Update = null; UpdateStatus = "Todavía no hay versiones publicadas."; }
+            else if (!info.IsNewer) { Update = null; UpdateStatus = $"Tienes la última versión ({CurrentVersion.ToString(3)})."; }
+            else
+            {
+                bool skipped = !manual && Runtime.Settings.SkippedVersion == info.Version;
+                bool isNew = Update?.Version != info.Version;
+                Update = skipped ? null : info;
+                UpdateStatus = $"Versión {info.Version} disponible.";
+                if (!skipped && isNew) Runtime.Activity.Add($"Actualización disponible: versión {info.Version}");
+            }
+        }
+        catch (Exception ex)
+        {
+            if (manual) UpdateStatus = "No se pudo consultar (¿sin conexión?): " + ex.Message; // silent when automatic: the app works offline
+        }
+        RaiseUpdate();
+    }
+
+    public static void SkipUpdate()
+    {
+        if (Update == null) return;
+        Runtime.Settings.SkippedVersion = Update.Version; Runtime.SaveSettings();
+        UpdateStatus = $"No se volverá a avisar de la versión {Update.Version}.";
+        Update = null; RaiseUpdate();
+    }
+
+    /// <summary>Downloads the verified installer and starts it; the app then exits so files can be replaced.
+    /// Only ever called from an explicit user action.</summary>
+    public static async Task InstallUpdateAsync()
+    {
+        var info = Update;
+        if (info == null || UpdateProgress >= 0) return;
+        try
+        {
+            UpdateProgress = 0; UpdateStatus = "Descargando…"; RaiseUpdate();
+            var progress = new Progress<double>(v => { UpdateProgress = v; UpdateStatus = $"Descargando… {v:0%}"; UpdateChanged?.Invoke(); });
+            string dir = Path.Combine(Path.GetTempPath(), "DualSenseUltimate-Update");
+            string file = await Core.Community.UpdateChecker.DownloadInstallerAsync(info, Runtime.Settings.UpdateRepository, dir, progress);
+            UpdateStatus = "Descarga verificada. Iniciando el instalador…"; RaiseUpdate();
+            FlushSave();
+            // Start the installer a few seconds after this process has exited, so it never finds the app still running.
+            var psi = new System.Diagnostics.ProcessStartInfo("cmd.exe") { UseShellExecute = false, CreateNoWindow = true };
+            psi.ArgumentList.Add("/c");
+            psi.ArgumentList.Add($"timeout /t 3 /nobreak >nul & start \"\" \"{file}\" /SILENT /NORESTART");
+            System.Diagnostics.Process.Start(psi);
+            Dispatcher.UIThread.Post(App.ExitApp);
+        }
+        catch (Exception ex)
+        {
+            Log.Error("update failed", ex);
+            UpdateProgress = -1; UpdateStatus = "No se pudo actualizar: " + ex.Message; RaiseUpdate();
+        }
+    }
+
     public static void Shutdown()
     {
         if (_shutdown || Runtime == null) return;

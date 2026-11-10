@@ -64,6 +64,8 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 Filename: "{tmp}\ViGEmBus_Setup.exe"; Parameters: "/passive /norestart"; StatusMsg: "Instalando ViGEmBus..."; Flags: shellexec waituntilterminated skipifdoesntexist; Tasks: vigem
 Filename: "{tmp}\HidHide_Setup.exe"; Parameters: "/passive /norestart"; StatusMsg: "Instalando HidHide..."; Flags: shellexec waituntilterminated skipifdoesntexist; Tasks: hidhide
 Filename: "{app}\{#AppExe}"; Description: "Iniciar {#AppName}"; Flags: nowait postinstall skipifsilent
+; In-app update (silent install): reopen the application when finished.
+Filename: "{app}\{#AppExe}"; Flags: nowait skipifnotsilent
 
 [UninstallRun]
 ; Un-hides any controller hidden through HidHide and removes the autostart entry, so nothing is left orphaned.

@@ -34,7 +34,8 @@
   carpeta `community/` esté en la rama `main`.
 - **Plugins**: se ejecutan dentro del proceso. Los permisos limitan la API que el plugin puede
   usar, no lo que su código puede hacer en el sistema. Solo deben activarse plugins de confianza.
-- **Actualizaciones**: se avisa de versiones nuevas; no se descargan ni instalan solas.
+- **Actualizaciones**: funcionan a partir de la primera versión publicada en GitHub Releases (etiqueta `vX.Y.Z`); nunca se instalan sin confirmación. El instalador no está firmado digitalmente, por lo que Windows SmartScreen puede mostrar un aviso.
+- **Batería**: el hardware solo da 11 niveles. El porcentaje intermedio y la autonomía son estimaciones; las primeras horas usan valores típicos hasta que la app observa varios cambios de nivel de ese mando.
 - **Acciones condicionadas**: se ofrecen capa shift, combinaciones y capas de pulsación, no un
   lenguaje de condiciones.
 - **Detección de juego**: por nombre de ejecutable. Dos juegos con el mismo nombre de proceso no se

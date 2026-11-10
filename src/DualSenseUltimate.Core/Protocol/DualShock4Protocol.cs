@@ -57,6 +57,7 @@ public static class DualShock4Protocol
 
         byte status0 = c[29], status1 = c[30];
         int level = status0 & 0x0F; bool cable = (status0 & 0x10) != 0;
+        state.BatteryLevelRaw = (byte)Math.Min(level, 10);
         if (cable)
         {
             if (level < 10) { state.BatteryPercent = level * 10 + 5; state.BatteryStatus = BatteryStatus.Charging; }
