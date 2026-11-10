@@ -112,6 +112,9 @@ public class IntegrationTests
         Thread.Sleep(100); h.Runtime.Devices.Scan();
         Assert.Single(h.Runtime.Sessions);
         Assert.Equal(ConnectionType.Usb, h.Runtime.Sessions[0].Device.Connection); // wired wins
+        // The rejected second path must never receive a "release" report: it is the same physical controller.
+        var bt = h.Runtime.Simulator.Controllers.First(c => c.Connection == ConnectionType.Bluetooth);
+        lock (bt.RawWrites) Assert.Empty(bt.RawWrites);
     }
 
     [Fact]
@@ -163,6 +166,18 @@ public class IntegrationTests
         h.Runtime.Simulator.Unplug(sim);
         WaitFor(() => { lock (h.Injector.Log) return h.Injector.Log.Contains("-Space"); }, "key released on disconnect");
         lock (h.Injector.Log) Assert.Equal(1, h.Injector.Log.Count(l => l == "+Space"));
+    }
+
+    [Fact]
+    public void Only_the_first_report_carries_lightbar_setup_and_static_state_is_not_spammed()
+    {
+        using var h = new Harness();
+        var sim = h.Plug("a", ConnectionType.Usb, "AA:00:00:00:00:0A");
+        WaitFor(() => sim.LastOutput != null, "output");
+        Thread.Sleep(700);
+        List<byte[]> writes; lock (sim.RawWrites) writes = sim.RawWrites.ToList();
+        Assert.Equal(1, writes.Count(w => w[1 + 41] == 0x02));
+        Assert.InRange(writes.Count, 1, 4); // static profile: no continuous rewriting by default
     }
 
     [Fact]
@@ -270,6 +285,72 @@ public class IntegrationTests
         Assert.Equal(HttpStatusCode.BadRequest, (await http.PostAsJsonAsync("/api/v1/controllers/first/profile", new { profile = "nope" })).StatusCode);
         var profiles = await http.GetFromJsonAsync<JsonElement>("/api/v1/profiles");
         Assert.True(profiles.GetArrayLength() >= 1);
+    }
+
+    private sealed class FakeHider : Core.Virtual.IDeviceHider
+    {
+        public List<string> Hidden = [], Allowed = [];
+        public bool IsAvailable => true;
+        public string Status => "fake";
+        public bool Hide(string p) { lock (Hidden) Hidden.Add(p); return true; }
+        public void Unhide(string p) { lock (Hidden) Hidden.Remove(p); }
+        public bool AllowApplication(string e) { lock (Allowed) Allowed.Add(e); return true; }
+        public void DisallowApplication(string e) { lock (Allowed) Allowed.Remove(e); }
+        public void UnhideAll() { lock (Hidden) Hidden.Clear(); }
+    }
+
+    private sealed class PathProcesses : IProcessSource
+    {
+        public HashSet<string> Names = new(StringComparer.OrdinalIgnoreCase);
+        public IReadOnlyCollection<string> RunningProcessNames() { lock (Names) return Names.ToList(); }
+        public IReadOnlyList<string> ExecutablePaths(string n) => [$@"C:\Games\{n}\{n}.exe"];
+    }
+
+    [Fact]
+    public void Isolation_hides_real_controllers_allows_listed_games_and_is_undone_on_exit()
+    {
+        using var tmp = new TempDir();
+        var hider = new FakeHider(); var procs = new PathProcesses();
+        var rt = new AppRuntime(tmp.Paths, new PlatformServices { Hider = hider, ProcessSource = procs });
+        var game = new Profile { Name = "Native game" }; game.Processes.Add("elden.exe");
+        var emulated = new Profile { Name = "Emulated game" }; emulated.Processes.Add("oldgame.exe"); emulated.Emulation.Mode = Core.Virtual.EmulationMode.Xbox360;
+        rt.Profiles.Save(game); rt.Profiles.Save(emulated);
+        rt.Start();
+        // A "real" (non simulated-flagged) controller: reuse the simulator transport behind a plain descriptor.
+        var sim = new SimulatedController("real", ConnectionType.Usb, mac: "AA:00:00:00:00:0B", autoReportHz: 100);
+        var real = new RealLookingEnumerator(sim);
+        using var devices = new DeviceManager(real);
+        ControllerSession? session = null;
+        devices.Connected += d => { session = new ControllerSession(d, rt.Platform); session.ApplyProfile(game, "manual"); };
+        devices.Scan();
+        Assert.NotNull(session);
+
+        Assert.Empty(hider.Hidden);
+        session!.SetIsolated(true);
+        Assert.Single(hider.Hidden);                              // hidden even though no emulation is active
+        Assert.True(session.IsHidden);
+        session.SetIsolated(false);
+        Assert.Empty(hider.Hidden);
+
+        // Allowed list and automatic whitelisting of native games only.
+        rt.Settings.IsolateControllers = true;
+        Assert.True(rt.AllowApplication(@"C:\Games\a.exe"));
+        Assert.False(rt.AllowApplication("not-an-exe.txt"));
+        procs.Names.Add("elden"); procs.Names.Add("oldgame");
+        WaitFor(() => { lock (hider.Allowed) return hider.Allowed.Any(a => a.Contains("elden")); }, "native game whitelisted", 8000);
+        lock (hider.Allowed) Assert.DoesNotContain(hider.Allowed, a => a.Contains("oldgame"));
+
+        session.SetIsolated(true);
+        session.Dispose();
+        Assert.Empty(hider.Hidden);                               // never left hidden
+        rt.Dispose();
+    }
+
+    private sealed class RealLookingEnumerator(SimulatedController sim) : IHidEnumerator
+    {
+        public event Action? Changed { add { } remove { } }
+        public IReadOnlyList<HidDeviceDescriptor> Enumerate() => [sim.Descriptor with { IsSimulated = false }];
+        public IHidTransport Open(HidDeviceDescriptor d) => sim;
     }
 
     [Fact]

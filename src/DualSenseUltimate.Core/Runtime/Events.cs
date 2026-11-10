@@ -55,6 +55,8 @@ public interface IProcessSource
     IReadOnlyCollection<string> RunningProcessNames();
     /// <summary>Executable name of the foreground window's process, when the platform can tell.</summary>
     string? ForegroundProcessName() => null;
+    /// <summary>Full executable paths of running processes with the given name (best effort).</summary>
+    IReadOnlyList<string> ExecutablePaths(string processName) => [];
 }
 
 public sealed class SystemProcessSource : IProcessSource

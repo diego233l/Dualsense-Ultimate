@@ -65,6 +65,9 @@ public sealed class HidHideController : IDeviceHider
 
     private void Persist() { try { JsonFile.Save(_stateFile, _hidden.ToList()); } catch { } }
 
+    public bool AllowApplication(string exePath) => exePath.Length > 0 && Run("--app-reg", exePath);
+    public void DisallowApplication(string exePath) { if (exePath.Length > 0) Run("--app-unreg", exePath); }
+
     public bool Hide(string hidPath)
     {
         string? instance = ToInstancePath(hidPath);

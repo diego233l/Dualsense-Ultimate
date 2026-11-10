@@ -62,6 +62,18 @@ public sealed class WindowsProcessSource : IProcessSource
 
     public IReadOnlyCollection<string> RunningProcessNames() => _inner.RunningProcessNames();
 
+    public IReadOnlyList<string> ExecutablePaths(string processName)
+    {
+        var list = new List<string>();
+        foreach (var p in System.Diagnostics.Process.GetProcessesByName(ProcessWatcher.Normalize(processName)))
+        {
+            // Fails for elevated or protected processes: those must be added by hand.
+            try { if (p.MainModule?.FileName is { Length: > 0 } f && !list.Contains(f, StringComparer.OrdinalIgnoreCase)) list.Add(f); } catch { }
+            p.Dispose();
+        }
+        return list;
+    }
+
     public string? ForegroundProcessName()
     {
         try

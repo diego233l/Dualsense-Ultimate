@@ -4,12 +4,13 @@
 
 | Tipo | Dónde | Resultado |
 |---|---|---|
-| Pruebas automatizadas (112) | `dotnet test`, Linux local | 112 superadas, 0 fallidas |
-| Pruebas automatizadas (112) | GitHub Actions `windows-latest` y `ubuntu-latest` | Superadas (ejecuciones 1 a 4 del flujo `build`) |
+| Pruebas automatizadas (115) | `dotnet test`, Linux local | 115 superadas, 0 fallidas |
+| Pruebas automatizadas (115) | GitHub Actions `windows-latest` y `ubuntu-latest` | Superadas (ejecuciones 1 a 4 del flujo `build`) |
 | Render de la interfaz (13 páginas) | `tools/Screenshots`, Linux local y CI Windows/Linux | Sin errores |
 | Publicación autocontenida `win-x64` | Linux local (compilación cruzada) | Genera `DualSenseUltimate.exe` (PE32+ GUI) |
 | Compilación del instalador (Inno Setup) | CI Windows | Correcta (ejecuciones 3 y 4 del flujo `build`); el instalador **no se ha ejecutado** |
 | **Hardware físico** | — | **No realizado: no se dispone de mando** |
+| Hardware físico (usuario, DualSense) | Primera prueba | La app detecta el mando y escribe luces/gatillos, pero otro emisor los sobrescribía; corregidos dos defectos propios y añadido aislamiento. **Pendiente de repetir** |
 | Ejecución interactiva en Windows | — | **No realizada** |
 
 ## Qué cubren las pruebas automatizadas

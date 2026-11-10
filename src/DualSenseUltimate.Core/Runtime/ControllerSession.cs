@@ -79,33 +79,48 @@ public sealed class ControllerSession : IDisposable
         }
     }
 
+    private bool _isolated;
+    public bool IsHidden => _hidden;
+
+    /// <summary>Isolation: keep the physical controller hidden from every program that is not allowed.</summary>
+    public void SetIsolated(bool isolated)
+    {
+        lock (_sync) { _isolated = isolated; UpdateHiding(Profile.Emulation); }
+    }
+
+    /// <summary>Hides or shows the physical device. Returns a note for the status line.</summary>
+    private string UpdateHiding(EmulationConfig e)
+    {
+        bool want = !Device.IsSimulated && (_isolated || (e.Mode != EmulationMode.None && e.HideOriginal));
+        if (want == _hidden) return _hidden ? " · mando físico oculto (HidHide)" : "";
+        if (!want) { _platform.Hider?.Unhide(Device.Descriptor.Path); _hidden = false; return ""; }
+        if (_platform.Hider is { IsAvailable: true } hider && hider.Hide(Device.Descriptor.Path)) { _hidden = true; return " · mando físico oculto (HidHide)"; }
+        return e.Mode != EmulationMode.None
+            ? " · AVISO: mando físico visible (HidHide no disponible): posible doble entrada"
+            : " · AVISO: aislamiento no aplicado (HidHide no disponible)";
+    }
+
     private void ConfigureEmulation(EmulationConfig e)
     {
         _pad?.Dispose(); _pad = null;
-        if (_hidden) { _platform.Hider?.Unhide(Device.Descriptor.Path); _hidden = false; }
         if (e.Mode == EmulationMode.None)
         {
-            EmulationStatus = "Sin emulación (DualSense nativo, modo híbrido disponible)";
+            EmulationStatus = "Sin emulación (DualSense nativo, modo híbrido disponible)" + UpdateHiding(e);
             return;
         }
         if (Device.IsSimulated) { EmulationStatus = "Emulación no disponible en mandos simulados"; return; }
         var factory = _platform.PadFactory;
-        if (factory is not { IsAvailable: true }) { EmulationStatus = "Emulación no disponible: " + (factory?.Status ?? "plataforma no compatible"); return; }
+        if (factory is not { IsAvailable: true }) { EmulationStatus = "Emulación no disponible: " + (factory?.Status ?? "plataforma no compatible") + UpdateHiding(new EmulationConfig()); return; }
         try
         {
             _pad = factory.Create(e.Mode);
             if (e.ForwardRumble) _pad.Rumble += (large, small) => _mixer.Set("virtual-pad", large, small);
-            EmulationStatus = $"Emulando {e.Mode}";
-            if (e.HideOriginal)
-            {
-                if (_platform.Hider is { IsAvailable: true } hider && hider.Hide(Device.Descriptor.Path)) { _hidden = true; EmulationStatus += " · mando físico oculto (HidHide)"; }
-                else EmulationStatus += " · AVISO: mando físico visible (HidHide no disponible): posible doble entrada";
-            }
+            EmulationStatus = $"Emulando {e.Mode}" + UpdateHiding(e);
         }
         catch (Exception ex)
         {
             Log.Error($"[{Id}] virtual pad creation failed", ex);
-            EmulationStatus = "Error al crear el mando virtual: " + ex.Message;
+            EmulationStatus = "Error al crear el mando virtual: " + ex.Message + UpdateHiding(new EmulationConfig());
         }
     }
 

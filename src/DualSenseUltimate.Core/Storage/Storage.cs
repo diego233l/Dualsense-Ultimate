@@ -83,6 +83,12 @@ public sealed class AppSettings
     public bool CheckUpdates { get; set; } = true;
     public bool SimulationEnabled { get; set; }
     public bool VerboseLogging { get; set; }
+    /// <summary>Re-send the output state continuously so other programs cannot keep overriding it.</summary>
+    public bool AssertOutput { get; set; }
+    /// <summary>Hide every managed controller from all programs except this app and the allowed list (needs HidHide).</summary>
+    public bool IsolateControllers { get; set; }
+    /// <summary>Full paths of executables (games) that may still access the physical controller while isolated.</summary>
+    public List<string> AllowedApplications { get; set; } = [];
     /// <summary>Custom names per controller id.</summary>
     public Dictionary<string, string> ControllerNames { get; set; } = new();
     /// <summary>Manually assigned profile per controller id.</summary>

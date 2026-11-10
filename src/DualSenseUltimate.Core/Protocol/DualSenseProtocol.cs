@@ -117,7 +117,7 @@ public static class DualSenseProtocol
 
     /// <summary>Builds a complete output report. Only fields covered by <see cref="OutputState.Ownership"/>
     /// have their valid flag set; the controller ignores the rest.</summary>
-    public static byte[] BuildOutput(OutputState s, ConnectionType connection, byte sequence = 0)
+    public static byte[] BuildOutput(OutputState s, ConnectionType connection, byte sequence = 0, bool lightbarSetup = false)
     {
         byte[] report; Span<byte> c;
         if (connection == ConnectionType.Usb)
@@ -146,8 +146,10 @@ public static class DualSenseProtocol
         if (s.Ownership.HasFlag(OutputOwnership.MicLed)) { flag1 |= 0x01; c[8] = (byte)s.MicLed; }
         if (s.Ownership.HasFlag(OutputOwnership.Lightbar))
         {
-            flag1 |= 0x04; flag2 |= 0x02;
-            c[41] = 0x02; // lightbar setup: light out (cancels the blue boot animation)
+            flag1 |= 0x04;
+            // Lightbar setup "light out" cancels the blue boot animation. It must be sent once per
+            // connection only: repeating it restarts the firmware fade on every report.
+            if (lightbarSetup) { flag2 |= 0x02; c[41] = 0x02; }
             c[44] = s.Red; c[45] = s.Green; c[46] = s.Blue;
         }
         if (s.Ownership.HasFlag(OutputOwnership.PlayerLeds))

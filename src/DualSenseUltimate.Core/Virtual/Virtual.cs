@@ -60,6 +60,9 @@ public interface IDeviceHider
     /// <summary>Hides the device behind the given HID path from other applications. Returns false on failure.</summary>
     bool Hide(string hidPath);
     void Unhide(string hidPath);
+    /// <summary>Lets the given executable (full path) keep seeing hidden devices. Returns false on failure.</summary>
+    bool AllowApplication(string exePath);
+    void DisallowApplication(string exePath);
     /// <summary>Removes every device this instance hid (called on exit and on crash recovery).</summary>
     void UnhideAll();
 }

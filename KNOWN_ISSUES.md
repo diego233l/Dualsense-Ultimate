@@ -23,6 +23,12 @@
 
 ## Funciones deliberadamente acotadas
 
+- **Aislamiento**: Windows no permite restringir qué procesos escriben en un dispositivo HID; solo
+  es posible con el controlador HidHide. Sin HidHide la única mitigación es «Prioridad de salida».
+  HidHide impide *abrir* el mando: un programa que ya lo tenía abierto lo conserva hasta reiniciarse
+  o hasta reconectar el mando. Los juegos elevados o protegidos por anti-trampas no se pueden
+  añadir automáticamente a la lista de permitidos; hay que añadirlos a mano.
+
 - **Biblioteca comunitaria**: catálogo estático en Git. No hay publicación desde la app ni
   valoraciones porque exigirían un servidor con cuentas. El catálogo solo es descargable cuando la
   carpeta `community/` esté en la rama `main`.

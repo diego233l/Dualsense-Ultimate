@@ -48,6 +48,7 @@ public sealed class AppRuntime : IAutomationTarget, IDisposable
         Settings = JsonFile.Load<AppSettings>(paths.SettingsFile);
         if (string.IsNullOrEmpty(Settings.ApiToken)) { Settings.ApiToken = Convert.ToHexString(System.Security.Cryptography.RandomNumberGenerator.GetBytes(16)).ToLowerInvariant(); SaveSettings(); }
         Log.MinLevel = Settings.VerboseLogging ? LogLevel.Debug : LogLevel.Info;
+        ApplyOutputPriority();
         Profiles = new ProfileStore(paths);
         Profiles.Changed += () => { try { ResolveAllProfiles(); } catch (Exception ex) { Log.Error("profile refresh failed", ex); } };
         Devices = new DeviceManager([.. enumerators, Simulator]);
@@ -68,6 +69,7 @@ public sealed class AppRuntime : IAutomationTarget, IDisposable
     {
         ConfigBackup.Create(Paths);
         if (Settings.SimulationEnabled) EnableSimulation(true);
+        if (Settings.IsolateControllers && Platform.Hider is { IsAvailable: true } h) foreach (var app in Settings.AllowedApplications) h.AllowApplication(app);
         Devices.Start();
         _tickTimer = new Timer(_ => Tick(), null, 16, 16);
         _slowTimer = new Timer(_ => SlowPoll(), null, 500, 2000);
@@ -86,6 +88,51 @@ public sealed class AppRuntime : IAutomationTarget, IDisposable
     {
         ControllerModel.DualSense => "DualSense", ControllerModel.DualSenseEdge => "DualSense Edge", _ => "DualShock 4",
     };
+
+    /// <summary>Applies the isolation setting: registers the allowed programs with HidHide and hides (or
+    /// shows) every connected controller. Programs that already had the controller open keep their
+    /// handle until they are restarted or the controller is reconnected.</summary>
+    public void ApplyIsolation()
+    {
+        var hider = Platform.Hider;
+        if (Settings.IsolateControllers && hider is { IsAvailable: true })
+            foreach (var app in Settings.AllowedApplications) hider.AllowApplication(app);
+        foreach (var s in Sessions) s.SetIsolated(Settings.IsolateControllers);
+        Activity.Add(Settings.IsolateControllers
+            ? (hider is { IsAvailable: true } ? "Aislamiento activado: solo esta app y los programas permitidos ven el mando" : "Aislamiento solicitado, pero HidHide no está instalado")
+            : "Aislamiento desactivado");
+    }
+
+    public bool AllowApplication(string exePath)
+    {
+        exePath = exePath.Trim().Trim('"');
+        if (exePath.Length == 0 || exePath.Length > 400 || !exePath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) return false;
+        if (!Settings.AllowedApplications.Contains(exePath, StringComparer.OrdinalIgnoreCase)) { Settings.AllowedApplications.Add(exePath); SaveSettings(); }
+        if (Settings.IsolateControllers) Platform.Hider?.AllowApplication(exePath);
+        return true;
+    }
+
+    public void DisallowApplication(string exePath)
+    {
+        Settings.AllowedApplications.RemoveAll(a => a.Equals(exePath, StringComparison.OrdinalIgnoreCase)); SaveSettings();
+        Platform.Hider?.DisallowApplication(exePath);
+    }
+
+    // Games tied to a profile that uses the real controller (no emulation) must be able to see it.
+    private void AllowDetectedGame(string processName)
+    {
+        if (!Settings.IsolateControllers) return;
+        bool native = Profiles.Profiles.Any(p => p.Emulation.Mode == Virtual.EmulationMode.None && p.Processes.Any(x => AutomationEngine.SameProcess(x, processName)));
+        if (!native) return;
+        foreach (var path in Platform.ProcessSource.ExecutablePaths(processName))
+        {
+            if (Settings.AllowedApplications.Contains(path, StringComparer.OrdinalIgnoreCase)) continue;
+            AllowApplication(path);
+            Activity.Add($"«{Path.GetFileName(path)}» añadido a los programas permitidos. Si el juego no detecta el mando, reinícialo.");
+        }
+    }
+
+    public void ApplyOutputPriority() => ControllerDevice.KeepAliveMs = Settings.AssertOutput ? 30 : 2000;
 
     public void SaveSettings() { try { JsonFile.Save(Paths.SettingsFile, Settings); } catch (Exception ex) { Log.Error("cannot save settings", ex); } }
     public void SaveRules() { try { JsonFile.Save(Paths.RulesFile, new RuleSet { Rules = Automation.Rules.ToList() }); } catch (Exception ex) { Log.Error("cannot save rules", ex); } }
@@ -140,6 +187,7 @@ public sealed class AppRuntime : IAutomationTarget, IDisposable
         dev.HealthChanged += d => Events.Publish(new DeviceHealthEvent(d.Id, d.Health.ToString()));
         lock (_lock) _sessions[dev.Id] = s;
         ResolveProfile(s);
+        if (Settings.IsolateControllers) s.SetIsolated(true);
         Activity.Add($"{DisplayName(s)} conectado por {(dev.Connection == ConnectionType.Usb ? "USB" : "Bluetooth")}{(dev.IsSimulated ? " (SIMULADO)" : "")}");
         Events.Publish(new ControllerConnectedEvent(dev.Id, dev.Model.ToString(), dev.Connection.ToString()));
         SessionsChanged?.Invoke();
@@ -233,7 +281,7 @@ public sealed class AppRuntime : IAutomationTarget, IDisposable
             var watched = Profiles.Profiles.SelectMany(p => p.Processes)
                 .Concat(Automation.Rules.Where(r => r.Enabled && r.Trigger is RuleTrigger.ProcessStarted or RuleTrigger.ProcessExited).Select(r => r.Process));
             var (started, exited) = _watcher.Poll(watched);
-            foreach (var n in started) { Activity.Add($"Aplicación detectada: {n}"); Events.Publish(new ProcessStartedEvent(n)); }
+            foreach (var n in started) { Activity.Add($"Aplicación detectada: {n}"); AllowDetectedGame(n); Events.Publish(new ProcessStartedEvent(n)); }
             foreach (var n in exited) { Activity.Add($"Aplicación cerrada: {n}"); Events.Publish(new ProcessExitedEvent(n)); }
             if (started.Count > 0 || exited.Count > 0 || _activeGames.Count != _watcher.Running.Count)
             {

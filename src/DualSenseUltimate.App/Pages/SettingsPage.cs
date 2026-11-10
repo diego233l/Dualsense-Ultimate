@@ -1,5 +1,6 @@
 using System.Reflection;
 using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using DualSenseUltimate.App.Controls;
 using DualSenseUltimate.Core.Community;
@@ -41,10 +42,52 @@ public sealed class SettingsPage : PageBase
             Ui.Text("• HidHide (ocultar el mando físico): " + (hid?.Status ?? "no disponible en esta plataforma"), "muted"),
             Ui.Text("• Audio háptico USB / captura de audio: " + (rt.Platform.HapticAudio == null ? "no disponible en esta plataforma" : "disponible (WASAPI)"), "muted"),
             new Border { Height = 6 },
+            Toggle("Prioridad de salida: reenviar luces, gatillos y vibración continuamente", s.AssertOutput, v => { s.AssertOutput = v; rt.SaveSettings(); rt.ApplyOutputPriority(); }),
+            Ui.Text("Actívalo si el color, el LED del micrófono o los gatillos solo se aplican un instante: significa que otro programa (Steam, DSX, DS4Windows, software RGB…) está escribiendo en el mando. " +
+                    "Con esta opción la app reescribe su estado unas 30 veces por segundo y prevalece, aunque lo correcto es cerrar el otro programa.", "muted"),
+            new Border { Height = 6 },
             Ui.Row(8, Ui.Btn("Descargar ViGEmBus", () => FileIo.OpenUrl("https://github.com/nefarius/ViGEmBus/releases/latest")),
                 Ui.Btn("Descargar HidHide", () => FileIo.OpenUrl("https://github.com/nefarius/HidHide/releases/latest")),
                 Ui.Btn("Mostrar todos los mandos ocultos", () => hid?.UnhideAll())),
             Ui.Text("Ambos controladores son opcionales: solo hacen falta para emular un mando Xbox/DualShock 4. El resto de funciones no los necesita.", "muted")));
+
+        var allowed = new StackPanel { Spacing = 4 };
+        foreach (var app in s.AllowedApplications.ToList())
+        {
+            var a = app;
+            allowed.Children.Add(Ui.Row(8, Ui.Btn("✕", () => { rt.DisallowApplication(a); Rebuild(); }), Ui.Text(a, "muted")));
+        }
+        if (s.AllowedApplications.Count == 0) allowed.Children.Add(Ui.Text("Ningún programa adicional permitido.", "muted"));
+        var isoState = Ui.Text("", "muted");
+        Live(() =>
+        {
+            var real = rt.Sessions.Where(x => !x.Device.IsSimulated).ToList();
+            isoState.Text = !s.IsolateControllers ? "Estado: desactivado."
+                : hid is not { IsAvailable: true } ? "Estado: NO aplicado. Instala HidHide (botón de arriba) y vuelve a activar el aislamiento."
+                : real.Count == 0 ? "Estado: activado; se aplicará al conectar un mando."
+                : $"Estado: {real.Count(x => x.IsHidden)} de {real.Count} mandos aislados.";
+        });
+        root.Children.Add(Card("Aislamiento del mando",
+            Ui.Text("Oculta el mando físico a todos los programas salvo DualSense Ultimate y los que permitas (tus juegos). Así Steam, DSX, DS4Windows o software RGB no pueden cambiar luces, gatillos ni vibración. " +
+                    "Windows no ofrece esta protección por sí mismo: se consigue con el controlador HidHide, que debe estar instalado.", "muted"),
+            Toggle("Aislar los mandos", s.IsolateControllers, v => { s.IsolateControllers = v; rt.SaveSettings(); Task.Run(rt.ApplyIsolation); }),
+            isoState,
+            Ui.Text("Programas permitidos (además de esta aplicación)", "label"), allowed,
+            Ui.Row(8, Ui.Btn("Añadir programa…", async () =>
+            {
+                var top = TopLevel.GetTopLevel(this);
+                if (top == null) return;
+                var files = await top.StorageProvider.OpenFilePickerAsync(new Avalonia.Platform.Storage.FilePickerOpenOptions
+                {
+                    Title = "Elige el ejecutable del juego", AllowMultiple = false,
+                    FileTypeFilter = [new Avalonia.Platform.Storage.FilePickerFileType("Programas") { Patterns = ["*.exe"] }],
+                });
+                if (files.Count > 0 && files[0].TryGetLocalPath() is { } path) { rt.AllowApplication(path); Rebuild(); }
+            })),
+            Ui.Text("• Los juegos asociados a un perfil sin emulación se añaden solos la primera vez que se detectan (si el juego no ve el mando esa primera vez, reinícialo).\n" +
+                    "• Con emulación (mando Xbox/DS4 virtual) el juego no necesita permiso: usa el mando virtual.\n" +
+                    "• Un programa que ya tenía el mando abierto lo conserva hasta que lo cierres o reconectes el mando: tras activar el aislamiento, cierra Steam/DSX o desconecta y vuelve a conectar el mando.\n" +
+                    "• Al salir de la aplicación o desinstalarla, el mando vuelve a ser visible para todos.", "muted")));
 
         root.Children.Add(Card("Actualizaciones",
             Toggle("Buscar actualizaciones al iniciar (consulta GitHub Releases; nunca instala nada sola)", s.CheckUpdates, v => { s.CheckUpdates = v; rt.SaveSettings(); }),

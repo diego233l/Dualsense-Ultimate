@@ -62,7 +62,12 @@ public sealed class DeviceManager : IDisposable
                 }
                 bool duplicate;
                 lock (_lock) duplicate = _byPath.Values.Any(x => x.Id == dev.Id);
-                if (duplicate) { dev.Dispose(); _openFailures[d.Path] = DateTime.UtcNow.AddSeconds(5); continue; }
+                if (duplicate)
+                {
+                    // Same controller seen through a second path (e.g. paired by Bluetooth and plugged in by USB).
+                    // Close it WITHOUT sending a release report, which would reset the controller we are driving.
+                    dev.DisposeSilently(); _openFailures[d.Path] = DateTime.UtcNow.AddSeconds(30); continue;
+                }
                 lock (_lock) _byPath[d.Path] = dev;
                 dev.Disconnected += Remove;
                 Log.Info($"connected {dev.Model} [{dev.Id}] via {dev.Connection}{(dev.IsSimulated ? " (SIMULATED)" : "")}");

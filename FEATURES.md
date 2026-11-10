@@ -89,6 +89,8 @@ Leyenda:
 | Reenvío de vibración del mando virtual | PEND |
 | Modo híbrido (propiedad parcial del informe de salida) | SIM |
 | Detección de programas en conflicto | SIM (por nombre de proceso) |
+| Aislamiento del mando (solo la app y programas permitidos) | SIM (lógica) / PEND (HidHide real) |
+| Prioridad de salida (reenvío continuo) | SIM |
 | Sunshine / Moonlight | PEND: debería funcionar al usar el mismo bus ViGEm; sin probar |
 
 ## Perfiles, automatización y ecosistema

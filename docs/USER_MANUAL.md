@@ -118,6 +118,7 @@ de seguridad (crear y restaurar) y registros de diagnóstico.
 
 | Problema | Qué hacer |
 |---|---|
+| El color, el LED del micrófono o los gatillos solo se aplican un instante | Otro programa está escribiendo en el mando. Ciérralo (Steam, DSX, DS4Windows, software RGB; mira también la bandeja), o activa *Ajustes → Aislamiento del mando* (requiere HidHide) y reconecta el mando. Sin HidHide: *Ajustes → Prioridad de salida* |
 | El mando no aparece | Prueba otro cable/puerto; por Bluetooth, elimínalo y vuelve a emparejar. *Mandos → Buscar ahora* |
 | La luz o los gatillos cambian solos | Otro programa controla el mando (aviso superior). Cierra DS4Windows/DSX o desactiva Steam Input para PlayStation |
 | Entradas duplicadas en un juego | Con emulación, instala HidHide y activa *Ocultar el mando físico* |

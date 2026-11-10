@@ -17,7 +17,12 @@ public sealed class ControllerDevice : IDisposable
     private OutputState? _lastSent;
     private volatile bool _disposed, _outputDirty = true;
     private byte _sequence;
-    private long _reportCount, _errorCount, _lastReportTicks;
+    private long _reportCount, _errorCount, _lastReportTicks, _writeCount;
+    private bool _setupSent, _skipRelease;
+    /// <summary>How often an unchanged output state is re-sent. A short interval lets this app win when another
+    /// program keeps overwriting the controller.</summary>
+    public static int KeepAliveMs { get; set; } = 2000;
+    public long WriteCount => Interlocked.Read(ref _writeCount);
     private InputState _state = InputState.Neutral;
 
     public HidDeviceDescriptor Descriptor { get; }
@@ -156,21 +161,22 @@ public sealed class ControllerDevice : IDisposable
         var keepAlive = Stopwatch.StartNew();
         while (!_disposed)
         {
-            _outputSignal.WaitOne(1000);
+            _outputSignal.WaitOne(Math.Clamp(KeepAliveMs, 20, 1000));
             if (_disposed) break;
             OutputState s;
             lock (_outputLock)
             {
                 // Rewrite every 2 s even if unchanged so the state survives controller sleep/wake and BT glitches.
-                if (!_outputDirty && keepAlive.ElapsedMilliseconds < 2000) continue;
+                if (!_outputDirty && keepAlive.ElapsedMilliseconds < KeepAliveMs) continue;
                 s = _pending; _outputDirty = false;
             }
-            if (_lastSent != null && _lastSent.ContentEquals(s) && keepAlive.ElapsedMilliseconds < 2000) continue;
+            if (_lastSent != null && _lastSent.ContentEquals(s) && keepAlive.ElapsedMilliseconds < KeepAliveMs) continue;
             if (s.Ownership == OutputOwnership.None) { _lastSent = s; continue; }
             try
             {
-                byte[] report = IsDualSense ? DualSenseProtocol.BuildOutput(s, Connection, _sequence++) : DualShock4Protocol.BuildOutput(s, Connection);
+                byte[] report = IsDualSense ? DualSenseProtocol.BuildOutput(s, Connection, _sequence++, lightbarSetup: !_setupSent) : DualShock4Protocol.BuildOutput(s, Connection);
                 _transport.Write(report);
+                _setupSent = true; Interlocked.Increment(ref _writeCount);
                 _lastSent = s; keepAlive.Restart();
             }
             catch (Exception ex) when (!_disposed)
@@ -212,10 +218,14 @@ public sealed class ControllerDevice : IDisposable
         catch { }
     }
 
+    /// <summary>Closes the handle without touching the controller's state (used for a second HID path of a
+    /// controller that is already managed through another path).</summary>
+    public void DisposeSilently() { _skipRelease = true; Dispose(); }
+
     public void Dispose()
     {
         if (_disposed) return;
-        if (Health != DeviceHealth.Lost) ReleaseHardware();
+        if (Health != DeviceHealth.Lost && !_skipRelease) ReleaseHardware();
         _disposed = true;
         _outputSignal.Set();
         try { _transport.Dispose(); } catch { }

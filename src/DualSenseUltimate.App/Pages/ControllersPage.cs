@@ -44,7 +44,7 @@ public sealed class ControllersPage : PageBase
         Live(() =>
         {
             var st = d.State;
-            live.Text = $"Batería: {Ui.BatteryText(st)}   ·   Informes: {d.ReportCount:N0} ({d.ReportRate:0} Hz)   ·   Errores: {d.ErrorCount}   ·   Estado: {d.Health}" +
+            live.Text = $"Batería: {Ui.BatteryText(st)}   ·   Informes: {d.ReportCount:N0} ({d.ReportRate:0} Hz)   ·   Errores: {d.ErrorCount}   ·   Estado: {d.Health}   ·   Escrituras de la app: {d.WriteCount:N0}" +
                         (st.HeadphonesConnected ? "   ·   Auriculares conectados" : "") + (st.MicMuted ? "   ·   Micrófono silenciado" : "");
         });
 

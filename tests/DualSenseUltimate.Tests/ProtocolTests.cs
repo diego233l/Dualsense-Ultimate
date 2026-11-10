@@ -233,3 +233,16 @@ public class TriggerEffectTests
         Assert.Equal(raw, TriggerEffectEncoder.Encode(new TriggerEffect { Type = TriggerEffectType.Raw, RawBytes = raw }));
     }
 }
+
+public class OutputRegressionTests
+{
+    [Fact]
+    public void Lightbar_setup_is_only_sent_when_requested()
+    {
+        var o = new OutputState { Green = 255 };
+        var normal = DualSenseProtocol.BuildOutput(o, ConnectionType.Usb);
+        Assert.Equal(0, normal[1 + 38] & 0x02); Assert.Equal(0, normal[1 + 41]);
+        var first = DualSenseProtocol.BuildOutput(o, ConnectionType.Usb, lightbarSetup: true);
+        Assert.Equal(0x02, first[1 + 38] & 0x02); Assert.Equal(0x02, first[1 + 41]);
+    }
+}

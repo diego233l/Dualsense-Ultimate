@@ -9,7 +9,8 @@ public static class PlatformFactory
     private static readonly (string Process, string Label)[] KnownConflicts =
     [
         ("DS4Windows", "DS4Windows"), ("DSX", "DSX"), ("DualSenseX", "DualSenseX"), ("reWASD", "reWASD"),
-        ("InputMapper", "InputMapper"), ("JoyShockMapper", "JoyShockMapper"), ("steam", "Steam (Steam Input puede tomar el control del mando)"),
+        ("InputMapper", "InputMapper"), ("JoyShockMapper", "JoyShockMapper"), ("DualSenseY", "DualSenseY"), ("DualSenseY-v2", "DualSenseY"),
+        ("PlayStationAccessories", "PlayStation Accessories"), ("Playnite.DesktopApp", "Playnite"), ("JoyToKey", "JoyToKey"), ("SignalRgb", "SignalRGB"), ("OpenRGB", "OpenRGB"), ("steam", "Steam (Steam Input puede tomar el control del mando)"),
     ];
 
     /// <summary>Creates the services available on the current OS. On non-Windows systems only HID access
