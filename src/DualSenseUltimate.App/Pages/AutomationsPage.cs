@@ -30,17 +30,18 @@ public sealed class AutomationsPage : PageBase
         void Save() { rt.Automation.Rules = rules; rt.SaveRules(); }
         var root = new StackPanel();
         root.Children.Add(Card(null,
+            Ui.Text("Las reglas se evalúan en segundo plano aunque la ventana esté cerrada. Solo pueden ejecutar las acciones de esta lista: no lanzan programas ni scripts.", "muted"),
+            new Border { Height = 8 },
             Ui.Row(10, Ui.Btn("+ Nueva regla", () =>
                 {
                     rules.Add(new AutomationRule { Actions = [new RuleAction { Type = RuleActionType.SetLightbar, Value = "#FF2D20" }] });
                     Save(); Rebuild();
-                }, true),
-                Ui.Text("Las reglas se evalúan en segundo plano aunque la ventana esté cerrada. Solo pueden ejecutar las acciones de esta lista: no lanzan programas ni scripts.", "muted"))));
+                }, true))));
 
         foreach (var r in rules.ToList())
         {
             var rule = r;
-            var name = new TextBox { Text = rule.Name, Width = 300 };
+            var name = new TextBox { Text = rule.Name, Width = 340, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, FontWeight = Avalonia.Media.FontWeight.SemiBold };
             name.LostFocus += (_, _) => { rule.Name = name.Text ?? ""; Save(); };
             var conditions = new WrapPanel();
             conditions.Children.Add(EnumCombo("Cuando…", rule.Trigger, v => { rule.Trigger = v; Save(); Rebuild(); }, TriggerName, 250));
