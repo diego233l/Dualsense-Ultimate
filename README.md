@@ -9,7 +9,7 @@ Bluetooth, con varios mandos a la vez.
 ![Dashboard](docs/screenshots/01-dashboard.png)
 
 > **Estado de validación (léelo antes de usarla).** El proyecto se ha desarrollado sin acceso a un
-> mando físico ni a un escritorio Windows interactivo. Toda la lógica está cubierta por 135 pruebas
+> mando físico ni a un escritorio Windows interactivo. Toda la lógica está cubierta por 137 pruebas
 > automatizadas que se ejecutan en Windows y Linux contra mandos simulados que hablan el protocolo
 > real, y un usuario ha confirmado en un DualSense real que iluminación, LED de micrófono y gatillos adaptativos funcionan. El resto de funciones (emulación, audio háptico, aislamiento, instalación de actualizaciones…) sigue sin validar en hardware. `FEATURES.md` indica el
 > estado exacto de cada función y `docs/HARDWARE_TEST_PLAN.md` cómo validarla en tu equipo.

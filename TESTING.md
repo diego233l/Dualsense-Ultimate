@@ -4,8 +4,8 @@
 
 | Tipo | Dónde | Resultado |
 |---|---|---|
-| Pruebas automatizadas (135) | `dotnet test`, Linux local | 135 superadas, 0 fallidas |
-| Pruebas automatizadas (135) | GitHub Actions `windows-latest` y `ubuntu-latest` | Superadas (ejecuciones 1 a 4 del flujo `build`) |
+| Pruebas automatizadas (137) | `dotnet test`, Linux local | 137 superadas, 0 fallidas |
+| Pruebas automatizadas (137) | GitHub Actions `windows-latest` y `ubuntu-latest` | Superadas (ejecuciones 1 a 4 del flujo `build`) |
 | Render de la interfaz (13 páginas) | `tools/Screenshots`, Linux local y CI Windows/Linux | Sin errores |
 | Publicación autocontenida `win-x64` | Linux local (compilación cruzada) | Genera `DualSenseUltimate.exe` (PE32+ GUI) |
 | Compilación del instalador (Inno Setup) | CI Windows | Correcta (ejecuciones 3 y 4 del flujo `build`); el instalador **no se ha ejecutado** |

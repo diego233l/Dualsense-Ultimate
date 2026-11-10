@@ -89,6 +89,7 @@ Leyenda:
 | HidHide: ocultar, mostrar, recuperación tras cierre brusco | SIM (conversión de rutas) / PEND (driver) |
 | Reenvío de vibración del mando virtual | PEND |
 | Modo híbrido (propiedad parcial del informe de salida) | SIM |
+| Desactivar efectos de luz del juego (reenvío continuo solo de luces) | SIM / PEND (resultado visual en juegos reales) |
 | Detección de programas en conflicto | SIM (por nombre de proceso) |
 | Aislamiento del mando (solo la app y programas permitidos) | SIM (lógica) / PEND (HidHide real) |
 | Prioridad de salida (reenvío continuo) | SIM |

@@ -23,6 +23,12 @@
 
 ## Funciones deliberadamente acotadas
 
+- **Desactivar efectos de luz del juego**: no es un bloqueo real (Windows no permite filtrar solo las
+  luces que escribe otro proceso), sino un reenvío de la iluminación del perfil cada ~5 ms por USB
+  y ~12 ms por Bluetooth. Con efectos del juego muy rápidos puede quedar un destello tenue. El
+  bloqueo total solo es posible con emulación (el juego no ve un DualSense), a costa de sus
+  gatillos y háptica nativos.
+
 - **Aislamiento**: Windows no permite restringir qué procesos escriben en un dispositivo HID; solo
   es posible con el controlador HidHide. Sin HidHide la única mitigación es «Prioridad de salida».
   HidHide impide *abrir* el mando: un programa que ya lo tenía abierto lo conserva hasta reiniciarse

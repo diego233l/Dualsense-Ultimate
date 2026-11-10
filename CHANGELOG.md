@@ -4,6 +4,15 @@
 
 Primera versión.
 
+Luces del juego:
+
+- Nuevo: **Desactivar efectos de luz del juego** (Iluminación y Remapeo → modo híbrido). Sustituye a
+  «Dejar luces al juego». Reenvía la iluminación del perfil cada pocos milisegundos para tapar las
+  luces que impone el juego (p. ej. policía en GTA V) sin tocar sus gatillos ni su vibración.
+- Sin esa opción, el refresco periódico ya no reescribe las luces, de modo que la app no provoca
+  parpadeos al competir con el juego.
+- La prueba guiada de hardware se incluye en la app instalada (Ajustes → Diagnóstico).
+
 Batería y actualizaciones:
 
 - **Batería calibrada**: el mando solo informa en pasos del 10 % y el valor bruto oscila. Ahora se

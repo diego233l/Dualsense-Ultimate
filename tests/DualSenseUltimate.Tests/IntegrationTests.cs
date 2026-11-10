@@ -181,6 +181,45 @@ public class IntegrationTests
     }
 
     [Fact]
+    public void Blocking_game_lighting_restores_the_profile_lights_within_milliseconds_without_touching_triggers()
+    {
+        using var h = new Harness();
+        var p = h.Runtime.Profiles.Profiles[0];
+        p.Lighting.Color = "#00FF00"; p.Emulation.BlockGameLighting = true; p.Emulation.NativeTriggers = true; p.Emulation.NativeRumble = true;
+        h.Runtime.Profiles.Save(p);
+        var sim = h.Plug("a", ConnectionType.Usb, "AA:00:00:00:00:0C");
+        WaitFor(() => sim.LastOutput is { Green: 255, Red: 0 }, "profile lights");
+        var game = new OutputState { Red = 255, Blue = 255, Ownership = OutputOwnership.Lightbar | OutputOwnership.RightTrigger,
+            RightTrigger = TriggerEffectEncoder.Encode(new TriggerEffect { Type = TriggerEffectType.Weapon, Start = 2, End = 5, Strength = 8 }) };
+        for (int i = 0; i < 20; i++)
+        {
+            sim.Write(DualSenseProtocol.BuildOutput(game, ConnectionType.Usb));   // the "game" sets police lights + a trigger effect
+            WaitFor(() => sim.LastOutput is { Green: 255, Red: 0, Blue: 0 }, "lights restored", 100);
+        }
+        Assert.Equal(0x25, sim.LastOutput!.RightTrigger[0]);                      // the game's trigger effect is untouched
+        byte[] last; lock (sim.RawWrites) last = sim.RawWrites[^1];
+        Assert.Equal(0, last[1] & 0x0F);                                          // our reports carry lights only
+    }
+
+    [Fact]
+    public void Without_blocking_a_static_profile_does_not_fight_the_game_over_the_lights()
+    {
+        using var h = new Harness();
+        var p = h.Runtime.Profiles.Profiles[0];
+        p.Lighting.Color = "#00FF00"; p.R2 = new TriggerEffect { Type = TriggerEffectType.Feedback, Strength = 4 };
+        h.Runtime.Profiles.Save(p);
+        var sim = h.Plug("a", ConnectionType.Usb, "AA:00:00:00:00:0D");
+        WaitFor(() => sim.LastOutput is { Green: 255 }, "profile lights");
+        sim.Write(DualSenseProtocol.BuildOutput(new OutputState { Red = 255, Ownership = OutputOwnership.Lightbar }, ConnectionType.Usb));
+        int before; lock (sim.RawWrites) before = sim.RawWrites.Count;
+        WaitFor(() => { lock (sim.RawWrites) return sim.RawWrites.Count > before; }, "keep-alive refresh", 4000);
+        Assert.True(sim.LastOutput is { Red: 255, Green: 0 }, "the game's colour stays: the refresh did not rewrite the lights");
+        byte[] refresh; lock (sim.RawWrites) refresh = sim.RawWrites[^1];
+        Assert.Equal(0, refresh[2] & 0x14);                                       // no lightbar / player LED flags
+        Assert.NotEqual(0, refresh[1] & 0x04);                                    // triggers are still refreshed
+    }
+
+    [Fact]
     public void Hybrid_mode_leaves_triggers_and_rumble_to_the_game()
     {
         using var h = new Harness();

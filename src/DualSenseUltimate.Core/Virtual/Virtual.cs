@@ -26,6 +26,9 @@ public sealed class EmulationConfig
     public bool NativeRumble { get; set; }
     /// <summary>Hybrid: leave the light bar and player LEDs to the game.</summary>
     public bool NativeLighting { get; set; }
+    /// <summary>Hybrid: suppress light effects written by the game (e.g. police lights) by re-sending this
+    /// profile's lighting continuously. The game keeps its adaptive triggers and haptics.</summary>
+    public bool BlockGameLighting { get; set; }
     public EmulationConfig Clone() => (EmulationConfig)MemberwiseClone();
 }
 

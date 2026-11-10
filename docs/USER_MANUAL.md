@@ -30,6 +30,8 @@ Datos de identificación (MAC, firmware), nombre personalizado, perfil asignado 
   nivel de batería o personalizado (editor de colores clave).
 - **LEDs de jugador**: jugador 1-4, todos, nivel de batería o máscara personalizada.
 - **LED del micrófono**: apagado, encendido o parpadeo.
+- **Desactivar efectos de luz del juego**: mantiene siempre la iluminación del perfil aunque el
+  juego intente cambiarla (luces de policía, salud…). No afecta a los gatillos ni a la vibración del juego.
 - **Presets**: guarda el ajuste actual, expórtalo a un archivo o importa uno.
 
 ## 5. Adaptive Triggers

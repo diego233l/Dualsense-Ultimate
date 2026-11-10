@@ -226,7 +226,9 @@ public sealed class ControllerSession : IDisposable
         var e = p.Emulation;
         if (e.NativeTriggers && _overrideL2 == null && _overrideR2 == null) own &= ~(OutputOwnership.LeftTrigger | OutputOwnership.RightTrigger);
         if (e.NativeRumble) own &= ~OutputOwnership.Rumble;
-        if (e.NativeLighting && _overrideColor == null) own &= ~(OutputOwnership.Lightbar | OutputOwnership.PlayerLeds | OutputOwnership.MicLed);
+        bool gameLights = e.NativeLighting && !e.BlockGameLighting;
+        Device.EnforceLights = e.BlockGameLighting;
+        if (gameLights && _overrideColor == null) own &= ~(OutputOwnership.Lightbar | OutputOwnership.PlayerLeds | OutputOwnership.MicLed);
         if (!Device.IsDualSense) own &= OutputOwnership.Rumble | OutputOwnership.Lightbar;
         o.Ownership = own;
 

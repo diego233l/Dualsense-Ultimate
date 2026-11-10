@@ -117,9 +117,15 @@ public sealed class RemapPage : PageBase
             e.Mode == EmulationMode.None
                 ? Wrap(Toggle("Dejar gatillos al juego", e.NativeTriggers, v => e.NativeTriggers = v), new Border { Width = 18 },
                     Toggle("Dejar vibración al juego", e.NativeRumble, v => e.NativeRumble = v), new Border { Width = 18 },
-                    Toggle("Dejar luces al juego", e.NativeLighting, v => e.NativeLighting = v))
+                    Toggle("Desactivar efectos de luz del juego", e.BlockGameLighting, v => { e.BlockGameLighting = v; if (v) e.NativeLighting = false; }))
                 : Wrap(Toggle("Ocultar el mando físico (HidHide)", e.HideOriginal, v => e.HideOriginal = v), new Border { Width = 18 },
                     Toggle("Reenviar vibración del juego", e.ForwardRumble, v => e.ForwardRumble = v)),
+            e.Mode == EmulationMode.None
+                ? Ui.Text("«Desactivar efectos de luz del juego»: algunos juegos (por ejemplo GTA V con las luces de policía) cambian la barra de luz por su cuenta. " +
+                          "Con esta opción la app reenvía la iluminación de este perfil cada pocos milisegundos, de modo que la del juego queda tapada, sin tocar sus gatillos ni su vibración. " +
+                          "Windows no permite bloquear solo las luces de otro programa, así que con efectos muy rápidos podría apreciarse un destello tenue. " +
+                          "Desactivada, el juego puede imponer sus luces cuando quiera.", "muted")
+                : new Border(),
             emuStatus,
             Ui.Text("Steam: para evitar entradas duplicadas, desactiva Steam Input para este juego si usas emulación, o deja que Steam gestione el mando y usa el modo híbrido sin asignaciones de botón.", "muted")));
 
