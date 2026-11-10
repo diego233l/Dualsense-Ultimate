@@ -10,6 +10,11 @@ dotnet publish (Join-Path $root "src/DualSenseUltimate.App/DualSenseUltimate.App
   -c Release -r win-x64 --self-contained true -p:Version=$Version -p:DebugType=none -o $out
 if ($LASTEXITCODE -ne 0) { throw "publish failed" }
 
+# Guided hardware test, published into the same folder so it shares the bundled .NET runtime.
+dotnet publish (Join-Path $root "tools/HardwareCheck/HardwareCheck.csproj") `
+  -c Release -r win-x64 --self-contained true -p:Version=$Version -p:DebugType=none -o $out
+if ($LASTEXITCODE -ne 0) { throw "hardware check publish failed" }
+
 # Bundle the sample plugins as disabled, ready-to-copy examples.
 foreach ($p in "BatteryLoggerPlugin", "HomeAssistantPlugin") {
   dotnet publish (Join-Path $root "samples/plugins/$p/$p.csproj") -c Release -o (Join-Path $out "sample-plugins/$p")

@@ -140,7 +140,17 @@ public sealed class SettingsPage : PageBase
         root.Children.Add(Card("Diagnóstico",
             Toggle("Registro detallado", s.VerboseLogging, v => { s.VerboseLogging = v; rt.SaveSettings(); Core.Diagnostics.Log.MinLevel = v ? Core.Diagnostics.LogLevel.Debug : Core.Diagnostics.LogLevel.Info; }),
             Ui.Row(8, Ui.Btn("Abrir carpeta de registros", () => FileIo.OpenFolder(rt.Paths.Logs)), Ui.Btn("Abrir carpeta de datos", () => FileIo.OpenFolder(rt.Paths.Root))),
-            Ui.Text(rt.Paths.Root, "muted")));
+            Ui.Text(rt.Paths.Root, "muted"),
+            new Border { Height = 8 },
+            Ui.Btn("Prueba guiada de hardware…", () =>
+            {
+                string exe = Path.Combine(AppContext.BaseDirectory, "DsuHardwareCheck.exe");
+                if (!File.Exists(exe)) { FileIo.OpenUrl("https://github.com/" + s.UpdateRepository + "/blob/main/docs/HARDWARE_TEST_PLAN.md"); return; }
+                // The test must be the only program writing to the controller, so this app closes first.
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exe) { UseShellExecute = true });
+                App.ExitApp();
+            }),
+            Ui.Text("Abre una ventana que prueba luces, vibración y cada efecto de gatillo en tu mando, te pregunta qué notas y guarda un informe en el Escritorio. DualSense Ultimate se cierra mientras dura la prueba.", "muted")));
 
         root.Children.Add(Card("Acerca de",
             Ui.Text("DualSense Ultimate " + (Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? ""), "h2"),

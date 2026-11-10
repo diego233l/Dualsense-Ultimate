@@ -6,9 +6,7 @@ la app, y registra el resultado en `TESTING.md`.
 
 ## A. Protocolo (automatizado)
 
-```powershell
-dotnet run --project tools/HardwareCheck
-```
+En la app instalada: **Ajustes → Diagnóstico → Prueba guiada de hardware** (o ejecuta `DsuHardwareCheck.exe` de la carpeta de instalación). Desde el código fuente, con el SDK de .NET: `dotnet run --project tools/HardwareCheck`.
 
 Ejecuta lectura de informes, identificación, batería, barra de luz, LEDs, vibración por canal, los
 siete efectos de gatillo y la liberación al cerrar, preguntando qué ves y sientes. Genera
