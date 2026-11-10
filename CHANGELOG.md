@@ -8,6 +8,15 @@ el alcance y las limitaciones conocidas.
 
 Primera versión.
 
+Luces del juego:
+
+- Nuevo: **Desactivar efectos de luz del juego** (Iluminación y Remapeo → modo híbrido). Sustituye a
+  «Dejar luces al juego». Reenvía la iluminación del perfil cada pocos milisegundos para tapar las
+  luces que impone el juego (p. ej. policía en GTA V) sin tocar sus gatillos ni su vibración.
+- Sin esa opción, el refresco periódico ya no reescribe las luces, de modo que la app no provoca
+  parpadeos al competir con el juego.
+- La prueba guiada de hardware se incluye en la app instalada (Ajustes → Diagnóstico).
+
 Batería y actualizaciones:
 
 - **Batería calibrada**: el mando solo informa en pasos del 10 % y el valor bruto oscila. Ahora se
@@ -40,7 +49,7 @@ Correcciones tras la primera prueba con un mando real (luces, LED de micrófono 
 - Perfiles por juego con restauración automática, automatizaciones, plugins, API REST local.
 - Biblioteca comunitaria (catálogo estático), importación/exportación validada.
 - Interfaz de 13 secciones, tema oscuro y claro, icono de bandeja.
-- Instalador Inno Setup, CI en Windows y Linux, 135 pruebas automatizadas.
+- Instalador Inno Setup, CI en Windows y Linux, 137 pruebas automatizadas.
 
 Validación completa en hardware real confirmada por el usuario el 10 de noviembre de 2026. Las
 funciones no implementadas y las limitaciones conocidas se mantienen identificadas en

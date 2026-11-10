@@ -92,6 +92,8 @@ public sealed class LightingPage : PageBase
         if (l.Mode == LightingMode.Battery)
             bar.Children.Add(Ui.Text("Verde con batería alta, amarillo a media carga y rojo parpadeante por debajo del 15 %. Late suavemente mientras carga.", "muted"));
 
+        bar.Children.Add(new Border { Height = 6 });
+        bar.Children.Add(Toggle("Desactivar efectos de luz del juego (mantener siempre esta iluminación)", p.Emulation.BlockGameLighting, v => { p.Emulation.BlockGameLighting = v; if (v) p.Emulation.NativeLighting = false; }));
         root.Children.Add(Card("Barra de luz", preview, leds, new Border { Height = 6 }, bar));
 
         // ---- player LEDs, mic LED, notifications

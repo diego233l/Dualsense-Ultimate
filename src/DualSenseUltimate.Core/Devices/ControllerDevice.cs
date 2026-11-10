@@ -160,25 +160,38 @@ public sealed class ControllerDevice : IDisposable
         _outputSignal.Set();
     }
 
+    /// <summary>When true the lights are re-sent continuously (every few milliseconds) so light effects
+    /// written by a game are overridden before they become visible. When false, an unchanged state is
+    /// refreshed only occasionally and that refresh leaves the lights alone, so this app never fights
+    /// a game over them.</summary>
+    public bool EnforceLights { get; set; }
+
+    private const OutputOwnership LightFields = OutputOwnership.Lightbar | OutputOwnership.PlayerLeds | OutputOwnership.MicLed;
+
     private void WriteLoop()
     {
         var keepAlive = Stopwatch.StartNew();
         while (!_disposed)
         {
-            _outputSignal.WaitOne(Math.Clamp(KeepAliveMs, 20, 1000));
+            int minGap = Connection == ConnectionType.Bluetooth ? 12 : 5; // write rate cap (BT bandwidth is limited)
+            int interval = EnforceLights ? minGap : KeepAliveMs;
+            _outputSignal.WaitOne(Math.Clamp(interval, 5, 1000));
             if (_disposed) break;
             OutputState s;
-            lock (_outputLock)
-            {
-                // Rewrite every 2 s even if unchanged so the state survives controller sleep/wake and BT glitches.
-                if (!_outputDirty && keepAlive.ElapsedMilliseconds < KeepAliveMs) continue;
-                s = _pending; _outputDirty = false;
-            }
-            if (_lastSent != null && _lastSent.ContentEquals(s) && keepAlive.ElapsedMilliseconds < KeepAliveMs) continue;
+            lock (_outputLock) { s = _pending; _outputDirty = false; }
+            bool changed = _lastSent == null || !_lastSent.ContentEquals(s);
+            if (!changed && keepAlive.ElapsedMilliseconds < interval) continue;
             if (s.Ownership == OutputOwnership.None) { _lastSent = s; continue; }
+            var toSend = s;
+            if (!changed && !EnforceLights && KeepAliveMs >= 1000)
+            {
+                // Routine refresh of an unchanged state: do not touch the lights.
+                toSend = s.Clone(); toSend.Ownership &= ~LightFields;
+                if (toSend.Ownership == OutputOwnership.None) { keepAlive.Restart(); continue; }
+            }
             try
             {
-                byte[] report = IsDualSense ? DualSenseProtocol.BuildOutput(s, Connection, _sequence++, lightbarSetup: !_setupSent) : DualShock4Protocol.BuildOutput(s, Connection);
+                byte[] report = IsDualSense ? DualSenseProtocol.BuildOutput(toSend, Connection, _sequence++, lightbarSetup: !_setupSent) : DualShock4Protocol.BuildOutput(toSend, Connection);
                 _transport.Write(report);
                 _setupSent = true; Interlocked.Increment(ref _writeCount);
                 _lastSent = s; keepAlive.Restart();
@@ -189,10 +202,10 @@ public sealed class ControllerDevice : IDisposable
                 Log.Warn($"[{Id}] output write failed: {ex.Message}");
                 SetHealth(DeviceHealth.Degraded);
                 Thread.Sleep(50);
-                lock (_outputLock) _outputDirty = true;
+                _lastSent = null;
             }
             catch { break; }
-            Thread.Sleep(Connection == ConnectionType.Bluetooth ? 8 : 4); // cap write rate (BT bandwidth is limited)
+            Thread.Sleep(minGap - 1);
         }
     }
 

@@ -90,6 +90,7 @@ Leyenda:
 | HidHide: ocultar, mostrar, recuperación tras cierre brusco | SIM + HW (incluye el driver) |
 | Reenvío de vibración del mando virtual | SIM + HW |
 | Modo híbrido (propiedad parcial del informe de salida) | SIM + HW |
+| Desactivar efectos de luz del juego (reenvío continuo solo de luces) | SIM (añadida después de la validación en hardware; pendiente de probar con juegos reales) |
 | Detección de programas en conflicto | SIM + HW (por nombre de proceso) |
 | Aislamiento del mando (solo la app y programas permitidos) | SIM + HW (incluye HidHide real) |
 | Prioridad de salida (reenvío continuo) | SIM + HW |

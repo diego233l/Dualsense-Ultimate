@@ -11,9 +11,9 @@ Bluetooth, con varios mandos a la vez.
 
 ![Dashboard](docs/screenshots/01-dashboard.png)
 
-> **Validación:** las 135 pruebas automatizadas pasan en Windows y Linux con mandos simulados que
+> **Validación:** las 137 pruebas automatizadas pasan en Windows y Linux con mandos simulados que
 > hablan el protocolo real. El usuario informa que todas las funciones implementadas también se
-> validaron correctamente en hardware real el 10 de noviembre de 2026. `FEATURES.md` detalla las
+> validaron correctamente en hardware real el 10 de noviembre de 2026. La opción «Desactivar efectos de luz del juego» se añadió después y aún no se ha probado en hardware. `FEATURES.md` detalla las
 > funciones disponibles y sus limitaciones conocidas.
 
 ## Instalación

@@ -6,11 +6,15 @@ using DualSenseUltimate.Core.Devices;
 using DualSenseUltimate.Core.Protocol;
 using DualSenseUltimate.Platform;
 
+Console.OutputEncoding = Encoding.UTF8;
+Console.WriteLine("DualSense Ultimate - prueba guiada de hardware");
+Console.WriteLine("Cierra antes DualSense Ultimate, Steam, DSX y DS4Windows para que nada más escriba en el mando.\n");
 var hid = new HidSharpEnumerator();
 var found = hid.Enumerate().Where(d => d.Model != null).ToList();
 if (found.Count == 0)
 {
     Console.WriteLine("No se ha encontrado ningún DualSense, DualSense Edge o DualShock 4. Conéctalo por USB o Bluetooth y vuelve a ejecutar.");
+    Console.WriteLine("Pulsa Intro para salir."); Console.ReadLine();
     return 2;
 }
 var report = new StringBuilder();
@@ -83,7 +87,10 @@ foreach (var d in found)
     report.AppendLine();
 }
 
-string file = Path.Combine(Environment.CurrentDirectory, $"hardware-report-{DateTime.Now:yyyyMMdd-HHmmss}.md");
+string folder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder)) folder = Environment.CurrentDirectory;
+string file = Path.Combine(folder, $"DualSenseUltimate-informe-{DateTime.Now:yyyyMMdd-HHmmss}.md");
 File.WriteAllText(file, report.ToString());
 Console.WriteLine($"\nInforme guardado en {file}. Fallos: {failures}");
+Console.WriteLine("Pulsa Intro para salir."); Console.ReadLine();
 return failures == 0 ? 0 : 1;

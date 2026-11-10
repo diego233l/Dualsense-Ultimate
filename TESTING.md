@@ -4,8 +4,8 @@
 
 | Tipo | Dónde | Resultado |
 |---|---|---|
-| Pruebas automatizadas (135) | `dotnet test`, Linux local | 135 superadas, 0 fallidas |
-| Pruebas automatizadas (135) | GitHub Actions `windows-latest` y `ubuntu-latest` | Última compilación del programa superada en el [commit `9029d91`](https://github.com/diego233l/Dualsense-Ultimate/actions/runs/42875783452) |
+| Pruebas automatizadas (137) | `dotnet test`, Linux local | 137 superadas, 0 fallidas |
+| Pruebas automatizadas (137) | GitHub Actions `windows-latest` y `ubuntu-latest` | Superadas en cada ejecución del flujo `build` (ver Actions) |
 | Render de la interfaz (13 páginas) | `tools/Screenshots`, Linux local y CI Windows/Linux | Sin errores |
 | Publicación autocontenida `win-x64` | Linux local (compilación cruzada) | Genera `DualSenseUltimate.exe` (PE32+ GUI) |
 | Instalador y desinstalador (Inno Setup) | CI Windows + hardware real | Compilación correcta; ejecución y validación completa comunicadas como superadas |
