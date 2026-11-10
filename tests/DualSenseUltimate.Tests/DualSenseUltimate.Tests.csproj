@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DualSenseUltimate.Core\DualSenseUltimate.Core.csproj" />
+    <ProjectReference Include="..\..\src\DualSenseUltimate.Api\DualSenseUltimate.Api.csproj" />
+    <ProjectReference Include="..\..\src\DualSenseUltimate.Platform\DualSenseUltimate.Platform.csproj" />
   </ItemGroup>
 
 </Project>

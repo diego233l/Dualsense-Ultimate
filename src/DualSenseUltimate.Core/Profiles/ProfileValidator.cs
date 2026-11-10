@@ -60,7 +60,7 @@ public static class ProfileValidator
         p.Lighting ??= new(); p.Haptics ??= new(); p.Mapping ??= new(); p.Emulation ??= new();
         p.L2 = Sanitize(p.L2); p.R2 = Sanitize(p.R2);
         Sanitize(p.Lighting); Sanitize(p.Haptics); Sanitize(p.Mapping, r);
-        p.Processes = (p.Processes ?? []).Select(x => Text(Path.GetFileName(x ?? ""), 100)).Where(x => x.Length > 0).Distinct(StringComparer.OrdinalIgnoreCase).Take(32).ToList();
+        p.Processes = (p.Processes ?? []).Select(x => Text((x ?? "").Split('/', '\\')[^1].Trim(), 100)).Where(x => x.Length > 0).Distinct(StringComparer.OrdinalIgnoreCase).Take(32).ToList();
         if (p.ControllerId is { Length: > 64 }) p.ControllerId = null;
         return r;
     }

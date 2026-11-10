@@ -7,7 +7,7 @@
     <Version>1.0.0</Version>
     <Authors>DualSense Ultimate contributors</Authors>
     <Product>DualSense Ultimate</Product>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <NoWarn>$(NoWarn);CS1591;CS0618</NoWarn>
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 </Project>
