@@ -1,8 +1,9 @@
-# Plan de validación en hardware
+# Validación en hardware
 
-Objetivo: pasar las funciones de **PEND/SIM** a **HW** en `FEATURES.md`. Anota para cada sesión el
-modelo del mando, la conexión, el firmware (sección Mandos), la versión de Windows y la versión de
-la app, y registra el resultado en `TESTING.md`.
+**Estado: completada.** El usuario confirma que todas las funciones implementadas y las pruebas de
+este plan se validaron correctamente en hardware real el 10 de noviembre de 2026. No se adjuntó el
+detalle de los modelos, conexiones, firmware ni versión de Windows. Conservamos estos pasos para
+repetir y documentar futuras validaciones; `TESTING.md` registra el resultado comunicado.
 
 ## A. Protocolo (automatizado)
 
@@ -12,8 +13,8 @@ dotnet run --project tools/HardwareCheck
 
 Ejecuta lectura de informes, identificación, batería, barra de luz, LEDs, vibración por canal, los
 siete efectos de gatillo y la liberación al cerrar, preguntando qué ves y sientes. Genera
-`hardware-report-*.md`. Repetir con: DualSense USB, DualSense Bluetooth, DualSense Edge y
-DualShock 4 (USB y Bluetooth).
+`hardware-report-*.md`. En futuras validaciones, repetir con DualSense USB, DualSense Bluetooth,
+DualSense Edge y DualShock 4 (USB y Bluetooth).
 
 ## B. Aplicación
 

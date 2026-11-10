@@ -1,9 +1,10 @@
 # Changelog
 
-## 1.0.0-rc.1 — 2026-11-10
+## 1.0.0 — 2026-11-10
 
-Primera candidata pública. Se distribuye como pre-release mientras continúa la validación en
-hardware real; consulta [FEATURES.md](FEATURES.md) y [el plan de pruebas](docs/HARDWARE_TEST_PLAN.md).
+Primera versión estable. El usuario confirma que todas las funciones implementadas se validaron
+correctamente en hardware real el 10 de noviembre de 2026; consulta [FEATURES.md](FEATURES.md) para
+el alcance y las limitaciones conocidas.
 
 Primera versión.
 
@@ -41,6 +42,6 @@ Correcciones tras la primera prueba con un mando real (luces, LED de micrófono 
 - Interfaz de 13 secciones, tema oscuro y claro, icono de bandeja.
 - Instalador Inno Setup, CI en Windows y Linux, 135 pruebas automatizadas.
 
-Validación física confirmada por un usuario para la barra de luz, el LED del micrófono y los
-gatillos adaptativos de un DualSense. Antes de una versión estable falta validar el resto de las
-funciones y controladores indicados como PEND en [FEATURES.md](FEATURES.md).
+Validación completa en hardware real confirmada por el usuario el 10 de noviembre de 2026. Las
+funciones no implementadas y las limitaciones conocidas se mantienen identificadas en
+[FEATURES.md](FEATURES.md) y [KNOWN_ISSUES.md](KNOWN_ISSUES.md).

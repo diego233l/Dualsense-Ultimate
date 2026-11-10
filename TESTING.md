@@ -8,10 +8,10 @@
 | Pruebas automatizadas (135) | GitHub Actions `windows-latest` y `ubuntu-latest` | Última compilación del programa superada en el [commit `9029d91`](https://github.com/diego233l/Dualsense-Ultimate/actions/runs/42875783452) |
 | Render de la interfaz (13 páginas) | `tools/Screenshots`, Linux local y CI Windows/Linux | Sin errores |
 | Publicación autocontenida `win-x64` | Linux local (compilación cruzada) | Genera `DualSenseUltimate.exe` (PE32+ GUI) |
-| Compilación del instalador (Inno Setup) | CI Windows | Correcta para el [commit `9029d91`](https://github.com/diego233l/Dualsense-Ultimate/actions/runs/42875783452); el instalador **no se ha ejecutado** |
-| **Hardware físico** | — | **No realizado: no se dispone de mando** |
-| Hardware físico (usuario, DualSense) | Primera prueba | La app detecta el mando y escribe luces/gatillos, pero otro emisor los sobrescribía; corregidos dos defectos propios y añadido aislamiento. Tras las correcciones el usuario confirma que luces, LED de micrófono y gatillos funcionan (sin informe detallado: modelo, conexión y firmware no registrados) |
-| Ejecución interactiva en Windows | — | **No realizada** |
+| Instalador y desinstalador (Inno Setup) | CI Windows + hardware real | Compilación correcta; ejecución y validación completa comunicadas como superadas |
+| **Hardware físico** | Usuario, 2026-11-10 | **Validación completa comunicada como superada** |
+| Primera prueba física (usuario) | Antes de corregir dos defectos | La app detectaba el mando, pero otro emisor sobrescribía luces y gatillos; se corrigieron ambos defectos y se añadió aislamiento. La validación posterior completa pasó. |
+| Ejecución interactiva en Windows | Usuario, 2026-11-10 | Validación completa comunicada como superada |
 
 ## Qué cubren las pruebas automatizadas
 
@@ -37,18 +37,17 @@
   recibe eventos y controla el mando; se le deniega una llamada sin permiso declarado; manifiestos
   maliciosos ignorados.
 
-## Qué NO cubren
+## Alcance y registro
 
-El simulador valida el *software*, no el hardware. Queda sin verificar: que un mando real interprete
-los informes como se espera, el comportamiento de HidSharp sobre la pila Bluetooth de Windows,
-SendInput, ViGEmBus, HidHide, WASAPI, la bandeja del sistema y el instalador. Tampoco hay pruebas
-con Steam ni con juegos.
+El simulador valida la lógica en CI; el usuario confirma que la validación completa en hardware
+real también se superó el 10 de noviembre de 2026. No se adjuntó el detalle de los modelos, firmware,
+conexiones ni entornos concretos, así que esos datos no se atribuyen a la prueba.
 
 ## Validación en hardware
 
-`docs/HARDWARE_TEST_PLAN.md` describe el procedimiento. `tools/HardwareCheck` automatiza la parte
-de protocolo y genera un informe. Los resultados se registrarán aquí:
+`docs/HARDWARE_TEST_PLAN.md` conserva los pasos para repetir la validación. `tools/HardwareCheck`
+automatiza la parte de protocolo y genera un informe; los detalles de esta sesión no se adjuntaron.
 
 | Fecha | Mando | Conexión | Firmware | Windows | Resultado | Informe |
 |---|---|---|---|---|---|---|
-| — | — | — | — | — | Sin ejecutar | — |
+| 2026-11-10 | Funciones implementadas | No registrado | No registrado | No registrado | Validación completa superada (usuario) | No adjunto |

@@ -3,19 +3,18 @@
 | Fase | Contenido | Estado |
 |---|---|---|
 | 1. Investigación y arquitectura | Protocolos, viabilidad, tecnologías (`docs/RESEARCH.md`, `ARCHITECTURE.md`) | Completada |
-| 2. Núcleo y detección | Dispositivos, USB/BT, batería, identificación, interfaz base | Completada (SIM) |
-| 3. Personalización | RGB, LEDs, gatillos, vibración, háptica | Completada (SIM / PEND audio) |
-| 4. Input avanzado | Remapeo, macros, touchpad, sticks, giroscopio, calibración | Completada (SIM) |
-| 5. Emulación | ViGEm, HidHide, modo híbrido | Implementada (PEND drivers) |
-| 6. Automatización | Perfiles por juego, reglas | Completada (SIM) |
-| 7. Ecosistema | API, plugins, biblioteca, importación/exportación | Completada (con las acotaciones de KNOWN_ISSUES) |
-| 8. Estabilización | Pruebas, instalador, CI, documentación | Completada salvo validación física |
+| 2. Núcleo y detección | Dispositivos, USB/BT, batería, identificación, interfaz base | Completada (SIM + HW) |
+| 3. Personalización | RGB, LEDs, gatillos, vibración, háptica | Completada (SIM + HW) |
+| 4. Input avanzado | Remapeo, macros, touchpad, sticks, giroscopio, calibración | Completada (SIM + HW) |
+| 5. Emulación | ViGEm, HidHide, modo híbrido | Completada (SIM + HW) |
+| 6. Automatización | Perfiles por juego, reglas | Completada (SIM + HW) |
+| 7. Ecosistema | API, plugins, biblioteca, importación/exportación | Completada (SIM + HW; con las acotaciones de KNOWN_ISSUES) |
+| 8. Estabilización | Pruebas, instalador, CI, documentación y hardware | Completada |
 
-## Siguiente paso obligatorio
+## Validación completada
 
-**Validación en hardware** (`docs/HARDWARE_TEST_PLAN.md`): DualSense USB, DualSense Bluetooth,
-DualSense Edge, DualShock 4, ViGEmBus + HidHide, Steam, instalador. Cada resultado actualiza
-`FEATURES.md` (PEND → HW) y `TESTING.md`.
+El usuario confirma que las funciones implementadas se validaron correctamente en hardware el 10 de
+noviembre de 2026. El informe no incluye la matriz de dispositivos y entornos; ver `TESTING.md`.
 
 ## Después
 

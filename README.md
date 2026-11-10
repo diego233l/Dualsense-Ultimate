@@ -11,17 +11,14 @@ Bluetooth, con varios mandos a la vez.
 
 ![Dashboard](docs/screenshots/01-dashboard.png)
 
-> **Estado de validación (léelo antes de usarla).** El proyecto se ha desarrollado sin acceso a un
-> mando físico ni a un escritorio Windows interactivo. Toda la lógica está cubierta por 135 pruebas
-> automatizadas que se ejecutan en Windows y Linux contra mandos simulados que hablan el protocolo
-> real, y un usuario ha confirmado en un DualSense real que iluminación, LED de micrófono y gatillos adaptativos funcionan. El resto de funciones (emulación, audio háptico, aislamiento, instalación de actualizaciones…) sigue sin validar en hardware. `FEATURES.md` indica el
-> estado exacto de cada función y `docs/HARDWARE_TEST_PLAN.md` cómo validarla en tu equipo.
+> **Validación:** las 135 pruebas automatizadas pasan en Windows y Linux con mandos simulados que
+> hablan el protocolo real. El usuario informa que todas las funciones implementadas también se
+> validaron correctamente en hardware real el 10 de noviembre de 2026. `FEATURES.md` detalla las
+> funciones disponibles y sus limitaciones conocidas.
 
 ## Instalación
 
-> **Candidato 1.0.0-rc.1:** se publica como pre-release mientras se valida el resto de funciones en
-> hardware real. La actualización automática solo ofrece versiones estables; para probar esta
-> candidata, descárgala manualmente desde [Releases](https://github.com/diego233l/Dualsense-Ultimate/releases).
+La versión estable 1.0.0 está disponible en [Releases](https://github.com/diego233l/Dualsense-Ultimate/releases).
 
 1. Descarga `DualSenseUltimate-Setup-x.y.z.exe` de [Releases](https://github.com/diego233l/Dualsense-Ultimate/releases)
    (o el artefacto `DualSenseUltimate-Setup` de la última ejecución de GitHub Actions).

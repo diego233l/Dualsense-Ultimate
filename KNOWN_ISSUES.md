@@ -2,8 +2,9 @@
 
 ## Validación
 
-- **Sin pruebas en hardware físico ni ejecución interactiva en Windows.** Es la limitación principal.
-  Hasta completar `docs/HARDWARE_TEST_PLAN.md` el producto debe considerarse una versión candidata.
+- El usuario informa que la validación completa de las funciones implementadas y el plan de hardware
+  se superaron el 10 de noviembre de 2026. No se adjuntó el informe ni el detalle de modelo, firmware,
+  conexión o entorno; la cobertura de otras combinaciones de hardware y Windows puede variar.
 
 ## Limitaciones del hardware, de Windows o del protocolo
 
@@ -29,24 +30,25 @@
   o hasta reconectar el mando. Los juegos elevados o protegidos por anti-trampas no se pueden
   añadir automáticamente a la lista de permitidos; hay que añadirlos a mano.
 
-- **Biblioteca comunitaria**: catálogo estático en Git. No hay publicación desde la app ni
-  valoraciones porque exigirían un servidor con cuentas. El catálogo solo es descargable cuando la
-  carpeta `community/` esté en la rama `main`.
+- **Biblioteca comunitaria**: catálogo estático en Git. La descarga e instalación se validaron; no
+  hay publicación desde la app ni valoraciones porque exigirían un servidor con cuentas.
 - **Plugins**: se ejecutan dentro del proceso. Los permisos limitan la API que el plugin puede
   usar, no lo que su código puede hacer en el sistema. Solo deben activarse plugins de confianza.
-- **Actualizaciones**: funcionan a partir de la primera versión publicada en GitHub Releases (etiqueta `vX.Y.Z`); nunca se instalan sin confirmación. El instalador no está firmado digitalmente, por lo que Windows SmartScreen puede mostrar un aviso.
+- **Actualizaciones**: funcionan desde las versiones estables publicadas en GitHub Releases (etiqueta `vX.Y.Z`); nunca se instalan sin confirmación. El instalador no está firmado digitalmente, por lo que Windows SmartScreen puede mostrar un aviso.
 - **Batería**: el hardware solo da 11 niveles. El porcentaje intermedio y la autonomía son estimaciones; las primeras horas usan valores típicos hasta que la app observa varios cambios de nivel de ese mando.
 - **Acciones condicionadas**: se ofrecen capa shift, combinaciones y capas de pulsación, no un
   lenguaje de condiciones.
 - **Detección de juego**: por nombre de ejecutable. Dos juegos con el mismo nombre de proceso no se
   distinguen.
 
-## Riesgos técnicos pendientes de comprobar
+## Compatibilidad entre entornos
 
-- Sentido de los ejes del giroscopio (hay interruptores de inversión por si acaso).
-- Offsets del estado del actuador del gatillo en el informe de entrada.
-- Escritura por Bluetooth mediante `WriteFile` con búfer de 547 bytes.
-- Disposición del informe extendido del DualShock 4 virtual (touchpad/movimiento).
-- Nombre del dispositivo de audio del DualSense en sistemas no ingleses (se busca «DualSense» o
-  «Wireless Controller» con 4 o más canales).
-- `HidHideCLI` puede requerir elevación según la versión instalada.
+La validación comunicada pasó en el entorno usado. Como no se adjuntó la matriz de dispositivos,
+versiones de Windows, drivers ni idiomas, conviene vigilar estas variaciones al recibir informes de
+otros equipos:
+
+- Ejes del giroscopio y offsets del estado del actuador.
+- Escritura Bluetooth mediante `WriteFile` con búfer de 547 bytes.
+- Informe extendido del DualShock 4 virtual (touchpad y movimiento).
+- Nombre del dispositivo de audio en sistemas no ingleses.
+- Elevación requerida por `HidHideCLI` según su versión.
