@@ -204,7 +204,7 @@ public sealed class AppRuntime : IAutomationTarget, IDisposable
     /// <summary>Re-applies the current profile object after the UI edited it in place (live preview).</summary>
     public void RefreshProfile(Profile p)
     {
-        foreach (var s in Sessions.Where(s => s.Profile.Id == p.Id)) s.ApplyProfile(p, s.ProfileReason);
+        foreach (var s in Sessions.Where(s => s.Profile.Id == p.Id)) s.ApplyProfile(p, s.ProfileReason, live: true);
         UpdateAudioCapture();
     }
 

@@ -56,17 +56,26 @@ public sealed class ControllerSession : IDisposable
         device.InputReceived += OnInput;
     }
 
-    public void ApplyProfile(Profile profile, string reason)
+    private (Virtual.EmulationMode, bool, bool)? _emulationKey;
+
+    /// <summary>Applies a profile. With <paramref name="live"/> = true (the UI is editing the active profile)
+    /// running effects are kept and the virtual pad is only rebuilt when the emulation settings changed.</summary>
+    public void ApplyProfile(Profile profile, string reason, bool live = false)
     {
         lock (_sync)
         {
             _applier.ReleaseAll();
             Profile = profile; ProfileReason = reason;
             _mapping.Config = profile.Mapping;
-            _mapping.Enabled = true;
-            _overrideL2 = _overrideR2 = null;
-            _haptics.Stop(); _mixer.Clear();
-            ConfigureEmulation(profile.Emulation);
+            if (!live)
+            {
+                _mapping.Enabled = true;
+                _overrideL2 = _overrideR2 = null;
+                lock (_haptics) _haptics.Stop();
+                _mixer.Clear();
+            }
+            var key = (profile.Emulation.Mode, profile.Emulation.HideOriginal, profile.Emulation.ForwardRumble);
+            if (!live || _emulationKey != key) { _emulationKey = key; ConfigureEmulation(profile.Emulation); }
         }
     }
 
