@@ -1,0 +1,115 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DualSenseUltimate.App.App"
+             RequestedThemeVariant="Dark">
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="AppBg" Color="#0B0D12"/>
+          <SolidColorBrush x:Key="SidebarBg" Color="#10131B"/>
+          <SolidColorBrush x:Key="CardBg" Color="#171B26"/>
+          <SolidColorBrush x:Key="CardBg2" Color="#1F2433"/>
+          <SolidColorBrush x:Key="CardBorder" Color="#262C3D"/>
+          <SolidColorBrush x:Key="TextMain" Color="#ECEFF6"/>
+          <SolidColorBrush x:Key="TextMuted" Color="#8B93A7"/>
+          <SolidColorBrush x:Key="PadBody" Color="#E9ECF3"/>
+          <SolidColorBrush x:Key="PadDark" Color="#1B1E27"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="AppBg" Color="#F2F4F9"/>
+          <SolidColorBrush x:Key="SidebarBg" Color="#E7EAF2"/>
+          <SolidColorBrush x:Key="CardBg" Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="CardBg2" Color="#EEF1F7"/>
+          <SolidColorBrush x:Key="CardBorder" Color="#D9DEEA"/>
+          <SolidColorBrush x:Key="TextMain" Color="#141824"/>
+          <SolidColorBrush x:Key="TextMuted" Color="#5D6579"/>
+          <SolidColorBrush x:Key="PadBody" Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="PadDark" Color="#232733"/>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+      <Color x:Key="AccentColor">#3D7BFF</Color>
+      <SolidColorBrush x:Key="Accent" Color="#3D7BFF"/>
+      <SolidColorBrush x:Key="Accent2" Color="#8A5CFF"/>
+      <SolidColorBrush x:Key="Good" Color="#30D158"/>
+      <SolidColorBrush x:Key="Warn" Color="#FFB020"/>
+      <SolidColorBrush x:Key="Bad" Color="#FF453A"/>
+      <LinearGradientBrush x:Key="AccentGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#3D7BFF" Offset="0"/><GradientStop Color="#8A5CFF" Offset="1"/>
+      </LinearGradientBrush>
+    </ResourceDictionary>
+  </Application.Resources>
+
+  <Application.Styles>
+    <FluentTheme>
+      <FluentTheme.Palettes>
+        <ColorPaletteResources x:Key="Dark" Accent="#3D7BFF" RegionColor="#0B0D12"/>
+        <ColorPaletteResources x:Key="Light" Accent="#3D7BFF" RegionColor="#F2F4F9"/>
+      </FluentTheme.Palettes>
+    </FluentTheme>
+    <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml"/>
+
+    <Style Selector="TextBlock"><Setter Property="Foreground" Value="{DynamicResource TextMain}"/></Style>
+    <Style Selector="TextBlock.h1"><Setter Property="FontSize" Value="26"/><Setter Property="FontWeight" Value="Bold"/></Style>
+    <Style Selector="TextBlock.h2"><Setter Property="FontSize" Value="15"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Margin" Value="0,0,0,10"/></Style>
+    <Style Selector="TextBlock.muted"><Setter Property="Foreground" Value="{DynamicResource TextMuted}"/><Setter Property="FontSize" Value="12.5"/><Setter Property="TextWrapping" Value="Wrap"/></Style>
+    <Style Selector="TextBlock.label"><Setter Property="Foreground" Value="{DynamicResource TextMuted}"/><Setter Property="FontSize" Value="12"/><Setter Property="Margin" Value="0,8,0,3"/></Style>
+    <Style Selector="TextBlock.big"><Setter Property="FontSize" Value="30"/><Setter Property="FontWeight" Value="Bold"/></Style>
+
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{DynamicResource CardBg}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource CardBorder}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="14"/>
+      <Setter Property="Padding" Value="18"/>
+      <Setter Property="Margin" Value="0,0,14,14"/>
+    </Style>
+    <Style Selector="Border.pill">
+      <Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="8,3"/>
+      <Setter Property="Background" Value="{DynamicResource CardBg2}"/>
+    </Style>
+    <Style Selector="Border.notice">
+      <Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="12,9"/><Setter Property="Margin" Value="0,0,14,14"/>
+      <Setter Property="Background" Value="#22FFB020"/><Setter Property="BorderBrush" Value="#66FFB020"/><Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <Style Selector="Button"><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="12,7"/></Style>
+    <Style Selector="Button.accent">
+      <Setter Property="Background" Value="{StaticResource AccentGradient}"/><Setter Property="Foreground" Value="White"/><Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.accent:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource Accent}"/><Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="ComboBox"><Setter Property="CornerRadius" Value="8"/><Setter Property="MinWidth" Value="150"/></Style>
+    <Style Selector="TextBox"><Setter Property="CornerRadius" Value="8"/></Style>
+    <Style Selector="Slider"><Setter Property="MinWidth" Value="140"/></Style>
+
+    <Style Selector="ListBox.nav"><Setter Property="Background" Value="Transparent"/><Setter Property="Padding" Value="8,0"/></Style>
+    <Style Selector="ListBox.nav ListBoxItem">
+      <Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="11,8"/><Setter Property="Margin" Value="0,1"/>
+      <Setter Property="Transitions"><Transitions><BrushTransition Property="Background" Duration="0:0:0.12"/></Transitions></Setter>
+    </Style>
+    <Style Selector="ListBox.nav ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource AccentGradient}"/>
+    </Style>
+    <Style Selector="ListBox.nav ListBoxItem:selected TextBlock"><Setter Property="Foreground" Value="White"/></Style>
+    <Style Selector="ListBox.nav ListBoxItem:selected Path"><Setter Property="Fill" Value="White"/></Style>
+    <Style Selector="ListBox.nav Path"><Setter Property="Fill" Value="{DynamicResource TextMuted}"/></Style>
+
+    <Style Selector="TransitioningContentControl"><Setter Property="PageTransition"><CrossFade Duration="0:0:0.14"/></Setter></Style>
+  </Application.Styles>
+
+  <TrayIcon.Icons>
+    <TrayIcons>
+      <TrayIcon Icon="/Assets/icon.ico" ToolTipText="DualSense Ultimate" Clicked="TrayOpen">
+        <TrayIcon.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="Abrir DualSense Ultimate" Click="TrayOpen"/>
+            <NativeMenuItemSeparator/>
+            <NativeMenuItem Header="Salir" Click="TrayExit"/>
+          </NativeMenu>
+        </TrayIcon.Menu>
+      </TrayIcon>
+    </TrayIcons>
+  </TrayIcon.Icons>
+</Application>

@@ -1,0 +1,26 @@
+name: Proponer una función
+description: Sugiere una mejora para DualSense Ultimate.
+title: "[Propuesta]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: ¿Qué necesidad resolvería?
+      description: Describe el problema o la tarea que quieres resolver.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: ¿Qué solución propones?
+      description: Explica cómo te gustaría que funcionara.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
+      description: Describe otras soluciones que hayas probado.
+    validations:
+      required: false

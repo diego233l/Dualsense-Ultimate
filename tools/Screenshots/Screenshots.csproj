@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Headless" Version="11.3.23" />
+    <PackageReference Include="Avalonia.Skia" Version="11.3.23" />
+    <ProjectReference Include="..\..\src\DualSenseUltimate.App\DualSenseUltimate.App.csproj" />
+  </ItemGroup>
+</Project>

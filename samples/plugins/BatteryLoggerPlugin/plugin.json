@@ -1,0 +1,9 @@
+{
+  "id": "samples.battery-logger",
+  "name": "Registro de batería",
+  "version": "1.0",
+  "author": "DualSense Ultimate",
+  "description": "Guarda en un CSV cada cambio de batería y avisa con un destello cuando un mando baja del 10 %.",
+  "assembly": "BatteryLoggerPlugin.dll",
+  "permissions": ["ReadState", "Events", "ControlOutput"]
+}

@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/samples/" />
+  <Folder Name="/samples/plugins/">
+    <Project Path="samples/plugins/BatteryLoggerPlugin/BatteryLoggerPlugin.csproj" />
+    <Project Path="samples/plugins/HomeAssistantPlugin/HomeAssistantPlugin.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/DualSenseUltimate.Api/DualSenseUltimate.Api.csproj" />
+    <Project Path="src/DualSenseUltimate.App/DualSenseUltimate.App.csproj" />
+    <Project Path="src/DualSenseUltimate.Core/DualSenseUltimate.Core.csproj" />
+    <Project Path="src/DualSenseUltimate.Platform/DualSenseUltimate.Platform.csproj" />
+    <Project Path="src/DualSenseUltimate.Plugin.Abstractions/DualSenseUltimate.Plugin.Abstractions.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DualSenseUltimate.Tests/DualSenseUltimate.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/HardwareCheck/HardwareCheck.csproj" />
+    <Project Path="tools/Screenshots/Screenshots.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,37 @@
+{
+  "format": "dualsense-ultimate",
+  "schemaVersion": 1,
+  "kind": "profile",
+  "name": "Shooter genérico",
+  "author": "DualSense Ultimate",
+  "description": "R2 con punto de disparo tipo pistola, L2 con resistencia media para apuntar y barra roja.",
+  "version": "1.0",
+  "payload": {
+    "name": "Shooter genérico",
+    "description": "Gatillos de arma para juegos de disparos sin soporte nativo.",
+    "lighting": {
+      "mode": "Static",
+      "color": "#FF3B30",
+      "playerLeds": "Player1"
+    },
+    "l2": {
+      "type": "Feedback",
+      "name": "Resistencia media",
+      "start": 1,
+      "strength": 5
+    },
+    "r2": {
+      "type": "Weapon",
+      "name": "Pistola",
+      "start": 2,
+      "end": 5,
+      "strength": 8
+    },
+    "haptics": {
+      "intensity": 100
+    },
+    "emulation": {
+      "mode": "None"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+name: Informar de un problema
+description: Reporta un fallo en DualSense Ultimate.
+title: "[Problema]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Antes de enviar, comprueba si el problema ya está en Known Issues. No incluyas datos
+        personales ni registros que contengan rutas o información privada.
+  - type: textarea
+    id: description
+    attributes:
+      label: ¿Qué ocurre?
+      description: Describe el resultado observado y qué esperabas que ocurriera.
+      placeholder: Pasos para reproducirlo y resultado obtenido.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Versión de DualSense Ultimate
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: windows
+    attributes:
+      label: Windows
+      options:
+        - Windows 11
+        - Windows 10
+        - Otro
+    validations:
+      required: true
+  - type: dropdown
+    id: controller
+    attributes:
+      label: Mando
+      options:
+        - DualSense
+        - DualSense Edge
+        - DualShock 4
+        - Otro
+        - No aplica
+    validations:
+      required: true
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Conexión
+      options:
+        - USB
+        - Bluetooth
+        - Ambas
+        - No aplica
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Comprobaciones realizadas
+      description: Indica si el fallo se reprodujo con Steam, DSX, DS4Windows u otros programas cerrados.
+      render: text
+    validations:
+      required: false

@@ -1,0 +1,29 @@
+{
+  "format": "dualsense-ultimate",
+  "schemaVersion": 1,
+  "kind": "lighting",
+  "name": "Atardecer",
+  "author": "DualSense Ultimate",
+  "description": "Transición lenta entre naranja, rosa y violeta.",
+  "version": "1.0",
+  "payload": {
+    "mode": "Custom",
+    "periodSeconds": 12,
+    "brightness": 100,
+    "keyframes": [
+      {
+        "time": 0,
+        "color": "#FF7A00"
+      },
+      {
+        "time": 0.35,
+        "color": "#FF2D75"
+      },
+      {
+        "time": 0.7,
+        "color": "#6A00FF"
+      }
+    ],
+    "playerLeds": "Off"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "format": "dualsense-ultimate",
+  "schemaVersion": 1,
+  "kind": "trigger",
+  "name": "Cuerda de arco pesada",
+  "author": "DualSense Ultimate",
+  "description": "Tensión creciente con retroceso fuerte al soltar.",
+  "version": "1.0",
+  "payload": {
+    "type": "Bow",
+    "name": "Cuerda de arco pesada",
+    "start": 2,
+    "end": 8,
+    "strength": 8,
+    "strength2": 8
+  }
+}

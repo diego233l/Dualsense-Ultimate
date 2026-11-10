@@ -1,0 +1,109 @@
+{
+  "format": "dualsense-ultimate",
+  "schemaVersion": 1,
+  "kind": "profile",
+  "name": "Escritorio: ratón con giroscopio",
+  "author": "DualSense Ultimate",
+  "description": "Usa el mando como ratón: giroscopio al mantener L2, touchpad como ratón, R2 clic izquierdo y R1 clic derecho.",
+  "version": "1.0",
+  "payload": {
+    "name": "Escritorio",
+    "description": "Control del PC desde el sofá en modo híbrido.",
+    "lighting": {
+      "mode": "Breathing",
+      "color": "#8A5CFF",
+      "periodSeconds": 6
+    },
+    "mapping": {
+      "bindings": {
+        "R2": {
+          "press": [
+            {
+              "type": "MouseButton",
+              "target": "Left"
+            }
+          ]
+        },
+        "R1": {
+          "press": [
+            {
+              "type": "MouseButton",
+              "target": "Right"
+            }
+          ]
+        },
+        "Cross": {
+          "press": [
+            {
+              "type": "Key",
+              "target": "Enter"
+            }
+          ]
+        },
+        "Circle": {
+          "press": [
+            {
+              "type": "Key",
+              "target": "Escape"
+            }
+          ]
+        },
+        "DpadUp": {
+          "press": [
+            {
+              "type": "Key",
+              "target": "Up"
+            }
+          ]
+        },
+        "DpadDown": {
+          "press": [
+            {
+              "type": "Key",
+              "target": "Down"
+            }
+          ]
+        },
+        "DpadLeft": {
+          "press": [
+            {
+              "type": "Key",
+              "target": "Left"
+            }
+          ]
+        },
+        "DpadRight": {
+          "press": [
+            {
+              "type": "Key",
+              "target": "Right"
+            }
+          ]
+        },
+        "Mute": {
+          "press": [
+            {
+              "type": "Key",
+              "target": "VolumeMute"
+            }
+          ]
+        }
+      },
+      "gyro": {
+        "mode": "Mouse",
+        "sensitivityX": 8,
+        "sensitivityY": 8,
+        "activationButton": "L2",
+        "smoothing": 0.4
+      },
+      "touchpad": {
+        "mode": "Mouse",
+        "sensitivity": 1.2
+      },
+      "rightStick": {
+        "output": "Mouse",
+        "mouseSpeed": 1400
+      }
+    }
+  }
+}
