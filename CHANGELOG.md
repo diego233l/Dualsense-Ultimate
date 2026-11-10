@@ -1,14 +1,6 @@
 # Changelog
 
-## 1.0.0 — 2026-11-10
-
-Primera versión estable. El usuario confirma que todas las funciones implementadas se validaron
-correctamente en hardware real el 10 de noviembre de 2026; consulta [FEATURES.md](FEATURES.md) para
-el alcance y las limitaciones conocidas.
-
-Primera versión.
-
-Luces del juego:
+## 1.0.1 — 2026-11-10
 
 - Nuevo: **Desactivar efectos de luz del juego** (Iluminación y Remapeo → modo híbrido). Sustituye a
   «Dejar luces al juego». Reenvía la iluminación del perfil cada pocos milisegundos para tapar las
@@ -16,6 +8,14 @@ Luces del juego:
 - Sin esa opción, el refresco periódico ya no reescribe las luces, de modo que la app no provoca
   parpadeos al competir con el juego.
 - La prueba guiada de hardware se incluye en la app instalada (Ajustes → Diagnóstico).
+- La opción de luces es posterior a la validación en hardware de la 1.0.0 y aún no se ha probado
+  con juegos reales.
+
+## 1.0.0 — 2026-11-10
+
+Primera versión estable. El usuario confirma que todas las funciones implementadas se validaron
+correctamente en hardware real el 10 de noviembre de 2026; consulta [FEATURES.md](FEATURES.md) para
+el alcance y las limitaciones conocidas.
 
 Batería y actualizaciones:
 
