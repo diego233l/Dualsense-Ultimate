@@ -100,7 +100,7 @@ jobs:
         run: |
           $version = $env:RELEASE_TAG.TrimStart('v')
           $changelog = Get-Content CHANGELOG.md -Raw
-          $pattern = "(?ms)^## $([regex]::Escape($version))\s*\r?\n(?<body>.*?)(?=^## |\z)"
+          $pattern = "(?ms)^##\s+$([regex]::Escape($version))[^\r\n]*\r?\n(?<body>.*?)(?=^##\s|\z)"
           $match = [regex]::Match($changelog, $pattern)
           if (-not $match.Success) { throw "No CHANGELOG.md section found for $version" }
           Set-Content -Path release-notes.md -Value $match.Groups['body'].Value.Trim() -Encoding utf8
